@@ -18,7 +18,7 @@
         "APP_NAME": "The OpenAlbion Project",
         "APP_ENV": "production",
         "APP_DEBUG": "false",
-        "APP_URL": "",
+        "APP_URL": "https://api.openalbion.com",
         "APP_CONFIG_CACHE": "/tmp/config.php",
         "APP_EVENTS_CACHE": "/tmp/events.php",
         "APP_PACKAGES_CACHE": "/tmp/packages.php",
