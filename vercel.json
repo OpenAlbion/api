@@ -1,7 +1,7 @@
 {
     "version": 2,
     "builds": [
-        { "src": "/api/index.php", "use": "vercel-php@0.6.0" },
+        { "src": "/vercel/index.php", "use": "vercel-php@0.6.0" },
         { "src": "/public/**", "use": "@vercel/static" }
     ],
     "routes": [
@@ -11,13 +11,12 @@
         },
         {
             "src": "/(.*)",
-            "dest": "/api/index.php"
+            "dest": "/vercel/index.php"
         }
     ],
     "env": {
         "APP_NAME": "The OpenAlbion Project",
         "APP_ENV": "production",
-        "APP_DEBUG": "false",
         "APP_URL": "https://api.openalbion.com",
         "APP_CONFIG_CACHE": "/tmp/config.php",
         "APP_EVENTS_CACHE": "/tmp/events.php",
