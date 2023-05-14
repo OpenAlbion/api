@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
 
 class GoogleSignInController extends Controller
@@ -15,7 +17,23 @@ class GoogleSignInController extends Controller
 
     public function callback()
     {
-        $user = Socialite::driver('google')->user();
-        dd($user);
+        $googleUser = Socialite::driver('google')->user();
+
+        $user = User::updateOrCreate(
+            [
+                'social_id' => $googleUser->id,
+                'social_provider' => 'google',
+            ],
+            [
+                'name' => $googleUser->name,
+                'email' => $googleUser->email,
+                'social_token' => $googleUser->token,
+                'social_refresh_token' => $googleUser->refreshToken,
+            ]
+        );
+
+        Auth::login($user);
+
+        return redirect('/dashboard');
     }
 }
