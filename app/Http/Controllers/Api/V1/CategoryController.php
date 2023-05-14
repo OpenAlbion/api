@@ -16,14 +16,16 @@ class CategoryController extends Controller
 
     public function index(Request $request)
     {
-        $data = $this->model
-            ->query()
-            ->with('children')
-            ->where('parent_id', null)
-            ->when($request->input('type'), function ($query, $type) {
-                $query->where('type', $type);
-            })
-            ->get();
+        $data = cache()->remember($request->generateCacheKey(), 180, function () {
+            return $this->model
+                ->query()
+                ->with('children')
+                ->where('parent_id', null)
+                ->when(request()->input('type'), function ($query, $type) {
+                    $query->where('type', $type);
+                })
+                ->get();
+        });
 
         return CategoryResource::collection($data);
     }

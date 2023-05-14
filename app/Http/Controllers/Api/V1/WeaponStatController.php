@@ -16,26 +16,30 @@ class WeaponStatController extends Controller
 
     public function byWeaponId($weaponId)
     {
-        $data = $this->model
-            ->query()
-            ->with('weapon')
-            ->where('weapon_id', $weaponId)
-            ->get();
-        $data = WeaponStatResource::collection($data)
-            ->toArray(request());
+        $data = cache()->remember(request()->generateCacheKey(), 180, function () use ($weaponId) {
+            $stats = $this->model
+                ->query()
+                ->with('weapon')
+                ->where('weapon_id', $weaponId)
+                ->get();
+            $statsResource = WeaponStatResource::collection($stats)
+                ->toArray(request());
 
-        return response()->json([
-            'data' => collect($data)
-                ->groupBy('enchantment')
-                ->map(function ($group, $key) {
-                    return [
-                        'enchantment' => $key,
-                        'icon' => app(RenderService::class)->setEnchantment($key)->renderItem($group->first()['weapon']->identifier),
-                        'stats' => $group,
-                    ];
-                })
-                ->values()
-                ->toArray(request()),
-        ]);
+            return [
+                'data' => collect($statsResource)
+                    ->groupBy('enchantment')
+                    ->map(function ($group, $key) {
+                        return [
+                            'enchantment' => $key,
+                            'icon' => app(RenderService::class)->setEnchantment($key)->renderItem($group->first()['weapon']->identifier),
+                            'stats' => $group,
+                        ];
+                    })
+                    ->values()
+                    ->toArray(request()),
+            ];
+        });
+
+        return response()->json($data);
     }
 }

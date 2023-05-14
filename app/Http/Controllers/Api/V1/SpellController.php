@@ -15,26 +15,30 @@ class SpellController extends Controller
 
     public function byWeaponId($weaponId)
     {
-        $data = $this->model
-            ->query()
-            ->whereHas('weaponSpells', function ($query) use ($weaponId) {
-                $query->where('weapon_id', $weaponId);
-            })
-            ->get();
-        $data = SpellResource::collection($data)
-            ->toArray(request());
-
-        return response()->json([
-            'data' => collect($data)
-                ->groupBy('slot')
-                ->map(function ($group, $key) {
-                    return [
-                        'slot' => $key,
-                        'spells' => $group,
-                    ];
+        $data = cache()->remember(request()->generateCacheKey(), 180, function () use ($weaponId) {
+            $spells = $this->model
+                ->query()
+                ->whereHas('weaponSpells', function ($query) use ($weaponId) {
+                    $query->where('weapon_id', $weaponId);
                 })
-                ->values()
-                ->toArray(request()),
-        ]);
+                ->get();
+            $spellsResource = SpellResource::collection($spells)
+                ->toArray(request());
+
+            return [
+                'data' => collect($spellsResource)
+                    ->groupBy('slot')
+                    ->map(function ($group, $key) {
+                        return [
+                            'slot' => $key,
+                            'spells' => $group,
+                        ];
+                    })
+                    ->values()
+                    ->toArray(request()),
+            ];
+        });
+
+        return response()->json($data);
     }
 }

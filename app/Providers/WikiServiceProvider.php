@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Services\Wiki\WikiService;
+use Illuminate\Http\Request;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 
@@ -86,6 +87,19 @@ class WikiServiceProvider extends ServiceProvider
 
         Str::macro('wikiPreview', function (string $str): string {
             return 'https://wiki.albiononline.com'.$str;
+        });
+
+        Request::macro('generateCacheKey', function () {
+            $url = request()->url();
+            $queryParams = request()->query();
+
+            ksort($queryParams);
+
+            $queryString = http_build_query($queryParams);
+
+            $fullUrl = "{$url}?{$queryString}";
+
+            return sha1($fullUrl);
         });
     }
 }
