@@ -25,8 +25,8 @@ class WeaponController extends Controller
                 ->when($request->input('subcategory_id'), function ($query, $category) {
                     $query->where('subcategory_id', $category);
                 })
-                ->when($request->input('tire'), function ($query, $tire) {
-                    $query->where('tire', $tire);
+                ->when($request->input('tier'), function ($query, $tier) {
+                    $query->where('tier', $tier);
                 })
                 ->get();
         });

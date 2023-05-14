@@ -51,7 +51,7 @@ class WikiServiceProvider extends ServiceProvider
             return $str;
         });
 
-        Str::macro('albionTire', function (string $str): ?int {
+        Str::macro('albionTier', function (string $str): ?int {
             if (Str::contains($str, 'Beginner\'s', true)) {
                 return 1;
             } elseif (Str::contains($str, 'Novice\'s', true)) {

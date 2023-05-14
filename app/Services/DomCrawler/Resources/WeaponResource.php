@@ -49,7 +49,7 @@ class WeaponResource
                 $weapons[] = [
                     'name' => $weaponContainer->eq($i)->filter('td')->eq(1)->text(),
                     'icon' => $weaponContainer->eq($i)->filter('td')->eq(0)->filter('img')->attr('src'),
-                    'tire' => $weaponContainer->eq($i)->filter('td')->eq(2)->text(),
+                    'tier' => $weaponContainer->eq($i)->filter('td')->eq(2)->text(),
                     'item_power' => $weaponContainer->eq($i)->filter('td')->eq(3)->text(),
                     'path' => $weaponContainer->eq($i)->filter('td')->eq(1)->filter('a')->attr('href'),
                 ];
@@ -67,7 +67,7 @@ class WeaponResource
                     $weapons[] = [
                         'name' => $name,
                         'icon' => $weaponContainer->eq($i)->filter('td')->eq(0)->filter('img')->attr('src'),
-                        'tire' => Str::albionTire($name),
+                        'tier' => Str::albionTier($name),
                         'item_power' => null,
                         'path' => $path,
                     ];

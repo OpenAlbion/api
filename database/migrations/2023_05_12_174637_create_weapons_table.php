@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class() extends Migration
-{
+return new class () extends Migration {
     /**
      * Run the migrations.
      */
@@ -17,7 +16,7 @@ return new class() extends Migration
             $table->foreignId('subcategory_id');
             $table->string('name');
             $table->string('identifier');
-            $table->decimal('tire', 2, 1);
+            $table->decimal('tier', 2, 1);
             $table->integer('item_power')->nullable();
             $table->string('path')->nullable();
             $table->timestamps();

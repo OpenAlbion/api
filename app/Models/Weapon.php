@@ -15,7 +15,7 @@ class Weapon extends Model
         'subcategory_id',
         'name',
         'identifier',
-        'tire',
+        'tier',
         'item_power',
         'path',
     ];

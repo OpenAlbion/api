@@ -31,7 +31,7 @@ class UpdateWeapon
             'subcategory_id' => data_get($item, 'subcategory_id'),
             'identifier' => Str::albionIdentifier(data_get($item, 'icon')),
             'path' => Str::wikiPath(data_get($item, 'path')),
-            'tire' => data_get($item, 'tire'),
+            'tier' => data_get($item, 'tier'),
             'item_power' => Str::albionItemPower(data_get($item, 'item_power')),
         ];
 
