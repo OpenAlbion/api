@@ -48,8 +48,8 @@ class GetWeaponStat extends Command
                 ->statList($html);
             foreach ($data as $item) {
                 $quality = data_get($item, 'Item Quality');
-                $tire = data_get($item, 'Tier');
-                if ($quality && $tire) {
+                $tier = data_get($item, 'Tier');
+                if ($quality && $tier) {
                     unset($item['Item Quality']);
                     unset($item['Tier']);
                     $stats = [];
@@ -63,7 +63,7 @@ class GetWeaponStat extends Command
                         ->execute([
                             'weapon_id' => $weapon->id,
                             'quality' => $quality,
-                            'enchantment' => Str::after($tire, '.') ?: 0,
+                            'enchantment' => Str::after($tier, '.') ?: 0,
                             'stats' => $stats,
                         ]);
                 }

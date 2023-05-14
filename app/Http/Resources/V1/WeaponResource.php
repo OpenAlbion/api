@@ -18,7 +18,7 @@ class WeaponResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'tire' => $this->tire,
+            'tier' => $this->tier,
             'item_power' => $this->item_power,
             'icon' => app(RenderService::class)->renderItem($this->identifier),
         ];
