@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\V1\CategoryController;
 use App\Http\Controllers\Api\V1\SpellController;
 use App\Http\Controllers\Api\V1\WeaponController;
+use App\Http\Controllers\Api\V1\WeaponStatController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -31,6 +32,13 @@ Route::controller(WeaponController::class)
 Route::controller(SpellController::class)
     ->name('spells.')
     ->prefix('spells')
+    ->group(function () {
+        Route::get('/weapon/{weaponId}', 'byWeaponId')->name('byWeaponId');
+    });
+
+Route::controller(WeaponStatController::class)
+    ->name('weaponStats.')
+    ->prefix('weapon-stats')
     ->group(function () {
         Route::get('/weapon/{weaponId}', 'byWeaponId')->name('byWeaponId');
     });

@@ -43,7 +43,7 @@ class GetWeaponSpell extends Command
                 ->__toString();
             $data = app(DomCrawlerService::class)
                 ->weapon()
-                ->spellList($html, $weapon->path);
+                ->spellList($html);
             foreach ($data as $item) {
                 $spell = app(UpdateSpell::class)
                     ->execute($item);
