@@ -14,6 +14,6 @@ class ApiToken extends Model
     protected $fillable = [
         'user_id',
         'name',
-        'token'
+        'token',
     ];
 }

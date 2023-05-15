@@ -16,7 +16,7 @@ class WeaponController extends Controller
 
     public function index(Request $request)
     {
-        $data = cache()->remember($request->generateCacheKey(), 180, function () use ($request) {
+        $data = cache()->remember($request->generateCacheKey(), config('settings.cache_seconds'), function () use ($request) {
             return $this->model
                 ->query()
                 ->when($request->input('category_id'), function ($query, $category) {

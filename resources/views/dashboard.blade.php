@@ -16,7 +16,7 @@
                             </h2>
 
                             <p class="mt-1 text-sm text-gray-600">
-                                {{ __("You can create a maximum of 10 API tokens.") }}
+                                You can create a maximum of {{ config('settings.maximum_api_token') }} API tokens.
                             </p>
                         </header>
 
@@ -25,12 +25,17 @@
 
                             <div>
                                 <x-input-label for="name" :value="__('Name')" />
-                                <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" required autofocus autocomplete="name" />
+                                <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" required autofocus autocomplete="name" :disabled="$tokens->count() >= config('settings.maximum_api_token')" />
                                 <x-input-error class="mt-2" :messages="$errors->get('name')" />
                             </div>
 
                             <div class="flex items-center gap-4">
-                                <x-primary-button>{{ __('Save') }}</x-primary-button>
+                                @if($tokens->count() >= config('settings.maximum_api_token')) 
+                                    <x-primary-button class="disabled:opacity-25" disabled>{{ __('Save') }}</x-primary-button>
+                                @else
+                                    <x-primary-button>{{ __('Save') }}</x-primary-button>
+                                @endif
+                                
                             </div>
                         </form>
                     </section>

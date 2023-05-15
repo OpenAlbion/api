@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ApiTokenCreateRequest;
 use App\Models\ApiToken;
-use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class DashboardController extends Controller
@@ -14,6 +13,7 @@ class DashboardController extends Controller
         $tokens = ApiToken::query()
             ->where('user_id', auth()->id())
             ->get();
+
         return view('dashboard', ['tokens' => $tokens]);
     }
 
@@ -22,13 +22,14 @@ class DashboardController extends Controller
         $existingTokens = ApiToken::query()
             ->where('user_id', auth()->id())
             ->count();
-        if ($existingTokens <= 1) {
+        if ($existingTokens < 10) {
             ApiToken::query()
                 ->create(array_merge($request->validated(), [
                     'token' => Str::uuid(),
-                    'user_id' => auth()->id()
+                    'user_id' => auth()->id(),
                 ]));
         }
+
         return redirect()->route('dashboard');
     }
 
@@ -38,6 +39,7 @@ class DashboardController extends Controller
             ->where('user_id', auth()->id())
             ->findOrFail($tokenId);
         $token->delete();
+
         return redirect()->route('dashboard');
     }
 }

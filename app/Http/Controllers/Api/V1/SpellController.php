@@ -15,7 +15,7 @@ class SpellController extends Controller
 
     public function byWeaponId($weaponId)
     {
-        $data = cache()->remember(request()->generateCacheKey(), 180, function () use ($weaponId) {
+        $data = cache()->remember(request()->generateCacheKey(), config('settings.cache_seconds'), function () use ($weaponId) {
             $spells = $this->model
                 ->query()
                 ->whereHas('weaponSpells', function ($query) use ($weaponId) {

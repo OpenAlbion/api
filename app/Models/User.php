@@ -27,7 +27,7 @@ class User extends Authenticatable
         'social_id',
         'social_provider',
         'social_token',
-        'social_refresh_token'
+        'social_refresh_token',
     ];
 
     /**

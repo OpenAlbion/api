@@ -16,7 +16,7 @@ class CategoryController extends Controller
 
     public function index(Request $request)
     {
-        $data = cache()->remember($request->generateCacheKey(), 180, function () {
+        $data = cache()->remember($request->generateCacheKey(), config('settings.cache_seconds'), function () {
             return $this->model
                 ->query()
                 ->with('children')

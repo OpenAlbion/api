@@ -14,10 +14,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
     Route::get('/auth/google/redirect', [GoogleSignInController::class, 'redirect'])
-                ->name('google.redirect');
+        ->name('google.redirect');
 
     Route::get('/auth/google/callback', [GoogleSignInController::class, 'callback'])
-                ->name('google.callback');
+        ->name('google.callback');
 
     // Route::get('register', [RegisteredUserController::class, 'create'])
     //             ->name('register');
@@ -62,5 +62,5 @@ Route::middleware('auth')->group(function () {
     // Route::put('password', [PasswordController::class, 'update'])->name('password.update');
 
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
-                ->name('logout');
+        ->name('logout');
 });
