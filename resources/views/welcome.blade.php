@@ -87,7 +87,7 @@
 
                                 <h2 class="mt-6 text-xl font-semibold text-gray-900 dark:text-white">Api Token</h2>
 
-                                <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">Our API tokens are <strong class="text-red-500">free</strong> and <strong class="text-red-500">unlimited</strong>. However, we have server bills to pay, and we appreciate any donations or corporate sponsorships that can help us cover these costs.
+                                <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">Our API offers <strong class="text-red-500">free</strong> and <strong class="text-red-500">unlimited</strong> access to Albion Online data. However, we have server bills to pay, and we appreciate any donations or corporate sponsorships that can help us cover these costs.
                                 </p>
                             </div>
                         </div>
