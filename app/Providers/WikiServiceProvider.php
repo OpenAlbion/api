@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Services\Wiki\WikiService;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
@@ -89,9 +90,13 @@ class WikiServiceProvider extends ServiceProvider
             return 'https://wiki.albiononline.com'.$str;
         });
 
-        Request::macro('generateCacheKey', function () {
+        Request::macro('generateCacheKey', function (): string {
             $url = request()->url();
             $queryParams = request()->query();
+
+            if (request()->query('api_token')) {
+                unset($queryParams['api_token']);
+            }
 
             ksort($queryParams);
 
@@ -100,6 +105,14 @@ class WikiServiceProvider extends ServiceProvider
             $fullUrl = "{$url}?{$queryString}";
 
             return sha1($fullUrl);
+        });
+
+        Request::macro('apiTokenCacheKey', function (): string {
+            $apiToken = request()->query('api_token');
+            if ($apiToken) {
+                return sha1($apiToken);
+            }
+            throw new Exception('Invalid Api Token!');
         });
     }
 }

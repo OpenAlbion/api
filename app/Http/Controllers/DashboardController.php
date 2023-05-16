@@ -35,10 +35,11 @@ class DashboardController extends Controller
 
     public function destroyApiToken($tokenId)
     {
-        $token = ApiToken::query()
+        $apiToken = ApiToken::query()
             ->where('user_id', auth()->id())
             ->findOrFail($tokenId);
-        $token->delete();
+        cache()->forget($apiToken->token);
+        $apiToken->delete();
 
         return redirect()->route('dashboard');
     }
