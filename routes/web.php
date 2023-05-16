@@ -30,6 +30,6 @@ Route::middleware('auth')->group(function () {
     // Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::get('privacy-policy', [WebviewController::class, 'privacyPolicy']);
+Route::get('privacy-policy', [WebviewController::class, 'privacyPolicy'])->name('privacyPolicy');
 
 require __DIR__.'/auth.php';
