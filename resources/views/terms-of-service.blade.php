@@ -4,17 +4,17 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Terms of Service | The OpenAlbion Project</title>
+    <title>Terms of Service | OpenAlbion</title>
 
     <meta name="description" content="OpenAlbion is a free and open-source platform providing Albion Online data and an API for developers to create apps.">
     <meta name="keywords" content="OpenAlbion, Albion Online, data, API, open-source, developers">
     <meta name="author" content="Pyae Sone Aung">
 
-    <meta property="og:title" content="The OpenAlbion Project">
+    <meta property="og:title" content="OpenAlbion">
     <meta property="og:description" content="OpenAlbion is a free and open-source platform providing Albion Online data and an API for developers to create apps.">
     <meta property="og:url" content="https://api.openalbion.com">
     <meta property="og:type" content="website">
-    <meta property="og:site_name" content="The OpenAlbion Project">
+    <meta property="og:site_name" content="OpenAlbion">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">

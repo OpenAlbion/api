@@ -1,4 +1,4 @@
-# The OpenAlbion Project
+# OpenAlbion
 
 OpenAlbion is a free and open-source platform providing Albion Online data and an API for developers to create apps.
 
