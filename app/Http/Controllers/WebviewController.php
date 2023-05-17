@@ -10,4 +10,9 @@ class WebviewController extends Controller
     {
         return view('privacy-policy');
     }
+
+    public function termsOfService(): View
+    {
+        return view('terms-of-service');
+    }
 }

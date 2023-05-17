@@ -31,5 +31,6 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::get('privacy-policy', [WebviewController::class, 'privacyPolicy'])->name('privacyPolicy');
+Route::get('terms-of-service', [WebviewController::class, 'termsOfService'])->name('termsOfService');
 
 require __DIR__.'/auth.php';
