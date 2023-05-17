@@ -6,12 +6,12 @@
 
         <title>OpenAlbion</title>
 
-        <meta name="description" content="OpenAlbion is a free and open-source platform providing Albion Online data and an API for developers to create apps.">
+        <meta name="description" content="OpenAlbion is a free and open-source platform providing Albion Online data and an API.">
         <meta name="keywords" content="OpenAlbion, Albion Online, data, API, open-source, developers">
         <meta name="author" content="Pyae Sone Aung">
 
         <meta property="og:title" content="OpenAlbion">
-        <meta property="og:description" content="OpenAlbion is a free and open-source platform providing Albion Online data and an API for developers to create apps.">
+        <meta property="og:description" content="OpenAlbion is a free and open-source platform providing Albion Online data and an API.">
         <meta property="og:url" content="https://api.openalbion.com">
         <meta property="og:type" content="website">
         <meta property="og:site_name" content="OpenAlbion">
