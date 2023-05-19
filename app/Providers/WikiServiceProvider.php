@@ -108,7 +108,7 @@ class WikiServiceProvider extends ServiceProvider
         });
 
         Request::macro('apiTokenCacheKey', function (): string {
-            $apiToken = request()->query('api_token');
+            $apiToken = request()->header('Authorization') ?: request()->query('api_token');
             if ($apiToken) {
                 return sha1($apiToken);
             }

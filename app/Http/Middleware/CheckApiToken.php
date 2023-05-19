@@ -16,13 +16,14 @@ class CheckApiToken
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if ($request->query('api_token')) {
+        $token = $request->header('Authorization') ?: $request->query('api_token');
+        if ($token) {
             $apiToken = cache()->remember(
                 $request->apiTokenCacheKey(),
                 config('settings.cache_seconds'),
-                function () use ($request) {
+                function () use ($token) {
                     return ApiToken::query()
-                        ->where('token', $request->input('api_token'))
+                        ->where('token', $token)
                         ->first();
                 }
             );
