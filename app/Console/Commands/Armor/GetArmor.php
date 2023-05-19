@@ -37,7 +37,6 @@ class GetArmor extends Command
             ->where('type', CategoryType::ARMOR)
             ->where('path', '!=', null)
             ->get();
-
         foreach ($subcategories as $subcategory) {
             $html = app(WikiService::class)
                 ->dynamic()
@@ -48,6 +47,9 @@ class GetArmor extends Command
             $data = app(DomCrawlerService::class)
                 ->armor()
                 ->list($html);
+            if (count($data) == 0) {
+                dd($subcategory);
+            }
             foreach ($data as $item) {
                 app(UpdateArmor::class)
                     ->execute(array_merge($item, [

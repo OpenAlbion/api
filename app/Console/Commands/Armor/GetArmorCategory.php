@@ -31,47 +31,47 @@ class GetArmorCategory extends Command
             [
                 'primary' => 'Cloth Armor',
                 'secondary' => 'Robes',
-                'path' => 'https://wiki.albiononline.com/wiki/Cloth_Robes',
+                'path' => '/wiki/Cloth_Robes',
             ],
             [
                 'primary' => 'Cloth Armor',
                 'secondary' => 'Cowl',
-                'path' => 'https://wiki.albiononline.com/wiki/Cloth_Cowls',
+                'path' => '/wiki/Cloth_Cowls',
             ],
             [
                 'primary' => 'Cloth Armor',
                 'secondary' => 'Sandals',
-                'path' => 'https://wiki.albiononline.com/wiki/Cloth_Sandals',
+                'path' => '/wiki/Cloth_Sandals',
             ],
             [
                 'primary' => 'Leather Armor',
                 'secondary' => 'Jackets',
-                'path' => 'https://wiki.albiononline.com/wiki/Leather_Jackets',
+                'path' => '/wiki/Leather_Jackets',
             ],
             [
                 'primary' => 'Leather Armor',
                 'secondary' => 'Hoods',
-                'path' => 'https://wiki.albiononline.com/wiki/Leather_Hoods',
+                'path' => '/wiki/Leather_Hoods',
             ],
             [
                 'primary' => 'Leather Armor',
                 'secondary' => 'Shoes',
-                'path' => 'https://wiki.albiononline.com/wiki/Leather_Shoes',
+                'path' => '/wiki/Leather_Shoes',
             ],
             [
                 'primary' => 'Plate Armor',
                 'secondary' => 'Armors',
-                'path' => 'https://wiki.albiononline.com/wiki/Plate_Armors',
+                'path' => '/wiki/Plate_Armors',
             ],
             [
                 'primary' => 'Plate Armor',
                 'secondary' => 'Helmets',
-                'path' => 'https://wiki.albiononline.com/wiki/Plate_Helmets',
+                'path' => '/wiki/Plate_Helmets',
             ],
             [
                 'primary' => 'Plate Armor',
                 'secondary' => 'Boots',
-                'path' => 'https://wiki.albiononline.com/wiki/Plate_Boots',
+                'path' => '/wiki/Plate_Boots',
             ],
         ];
 

@@ -56,22 +56,20 @@ class WeaponResource
             }
         } else {
             $weaponContainer = $dom->filter('#mw-content-text > div > table > tbody > tr');
-            if ($weaponContainer->count()) {
-                foreach (range(1, $weaponContainer->count() - 1) as $i) {
-                    $name = $weaponContainer->eq($i)->filter('td')->eq(0)->text();
-                    if ($weaponContainer->eq($i)->filter('td')->eq(0)->filter('a')->count()) { // for all weapons
-                        $path = $weaponContainer->eq($i)->filter('td')->eq(0)->filter('a')->attr('href');
-                    } else { // for tome of spells
-                        $path = '/wiki/'.Str::replace(' ', '_', $name);
-                    }
-                    $weapons[] = [
-                        'name' => $name,
-                        'icon' => $weaponContainer->eq($i)->filter('td')->eq(0)->filter('img')->attr('src'),
-                        'tier' => Str::albionTier($name),
-                        'item_power' => null,
-                        'path' => $path,
-                    ];
+            foreach (range(1, $weaponContainer->count() - 1) as $i) {
+                $name = $weaponContainer->eq($i)->filter('td')->eq(0)->text();
+                if ($weaponContainer->eq($i)->filter('td')->eq(0)->filter('a')->count()) { // for all weapons
+                    $path = $weaponContainer->eq($i)->filter('td')->eq(0)->filter('a')->attr('href');
+                } else { // for tome of spells
+                    $path = '/wiki/'.Str::replace(' ', '_', $name);
                 }
+                $weapons[] = [
+                    'name' => $name,
+                    'icon' => $weaponContainer->eq($i)->filter('td')->eq(0)->filter('img')->attr('src'),
+                    'tier' => Str::albionTier($name),
+                    'item_power' => null,
+                    'path' => $path,
+                ];
             }
         }
 
