@@ -16,12 +16,12 @@ class CategoryController extends Controller
 
     public function index(Request $request)
     {
-        $data = cache()->remember($request->generateCacheKey(), config('settings.cache_seconds'), function () {
+        $data = cache()->remember($request->generateCacheKey(), config('settings.cache_seconds'), function () use ($request) {
             return $this->model
                 ->query()
                 ->with('children')
                 ->where('parent_id', null)
-                ->when(request()->input('type'), function ($query, $type) {
+                ->when($request->input('type'), function ($query, $type) {
                     $query->where('type', $type);
                 })
                 ->get();

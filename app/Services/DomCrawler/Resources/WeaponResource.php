@@ -61,7 +61,7 @@ class WeaponResource
                     $name = $weaponContainer->eq($i)->filter('td')->eq(0)->text();
                     if ($weaponContainer->eq($i)->filter('td')->eq(0)->filter('a')->count()) { // for all weapons
                         $path = $weaponContainer->eq($i)->filter('td')->eq(0)->filter('a')->attr('href');
-                    } else { // for only tome of spells
+                    } else { // for tome of spells
                         $path = '/wiki/'.Str::replace(' ', '_', $name);
                     }
                     $weapons[] = [

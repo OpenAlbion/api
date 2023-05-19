@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\ArmorController;
 use App\Http\Controllers\Api\V1\CategoryController;
 use App\Http\Controllers\Api\V1\SpellController;
 use App\Http\Controllers\Api\V1\WeaponController;
@@ -41,4 +42,11 @@ Route::controller(WeaponStatController::class)
     ->prefix('weapon-stats')
     ->group(function () {
         Route::get('/weapon/{weaponId}', 'byWeaponId')->name('byWeaponId');
+    });
+
+Route::controller(ArmorController::class)
+    ->name('armors.')
+    ->prefix('armors')
+    ->group(function () {
+        Route::get('/', 'index')->name('index');
     });

@@ -90,6 +90,10 @@ class WikiServiceProvider extends ServiceProvider
             return 'https://wiki.albiononline.com'.$str;
         });
 
+        Str::macro('sanitizeSpellDescription', function (string $str): string {
+            return preg_replace('/class="[^"]*"/', '', $str);
+        });
+
         Request::macro('generateCacheKey', function (): string {
             $url = request()->url();
             $queryParams = request()->query();

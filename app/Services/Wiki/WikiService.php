@@ -4,6 +4,7 @@ namespace App\Services\Wiki;
 
 use App\Services\Concerns\BuildRequest;
 use App\Services\Concerns\CanSendGetRequest;
+use App\Services\Wiki\Resources\ArmorResource;
 use App\Services\Wiki\Resources\DynamicResource;
 use App\Services\Wiki\Resources\WeaponResource;
 
@@ -20,6 +21,13 @@ class WikiService
     public function weapon(): WeaponResource
     {
         return new WeaponResource(
+            service: $this,
+        );
+    }
+
+    public function armor(): ArmorResource
+    {
+        return new ArmorResource(
             service: $this,
         );
     }

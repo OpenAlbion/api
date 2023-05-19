@@ -30,7 +30,7 @@ class UpdateSpell
             'identifier' => Str::albionIdentifier(data_get($item, 'icon')),
             'slot' => data_get($item, 'slot'),
             'attributes' => data_get($item, 'attributes'),
-            'description' => data_get($item, 'description'),
+            'description' => Str::sanitizeSpellDescription(data_get($item, 'description')),
             'preview' => data_get($item, 'preview'),
             'ref' => data_get($item, 'ref'),
         ];
