@@ -31,7 +31,7 @@ class SanitizeSpellDescription extends Command
             ->get();
         foreach ($data as $item) {
             $item->update([
-                'description' => Str::sanitizeSpellDescription($this->description)
+                'description' => Str::sanitizeSpellDescription($this->description),
             ]);
         }
     }

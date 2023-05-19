@@ -38,7 +38,6 @@ class GetArmor extends Command
             ->where('path', '!=', null)
             ->get();
 
-
         foreach ($subcategories as $subcategory) {
             $html = app(WikiService::class)
                 ->dynamic()
