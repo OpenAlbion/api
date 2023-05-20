@@ -20,6 +20,7 @@ class ArmorResource extends JsonResource
             'name' => $this->name,
             'tier' => $this->tier,
             'item_power' => $this->item_power,
+            'identifier' => $this->identifier,
             'icon' => app(RenderService::class)->renderItem($this->identifier),
         ];
     }
