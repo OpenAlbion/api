@@ -33,7 +33,7 @@ class UpdateArmorIdentifier extends Command
         foreach ($armors as $armor) {
             $item = $items->firstWhere('LocalizedNames.EN-US', $armor->name);
             $armor->update([
-                'identifier' => $item['UniqueName']
+                'identifier' => $item['UniqueName'],
             ]);
         }
     }

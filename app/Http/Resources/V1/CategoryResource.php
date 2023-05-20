@@ -4,6 +4,7 @@ namespace App\Http\Resources\V1;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Str;
 
 class CategoryResource extends JsonResource
 {
@@ -18,6 +19,7 @@ class CategoryResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'type' => $this->type,
+            'path' => $this->when($request->app_check, Str::plural($this->type->value)),
             'subcategories' => CategoryResource::collection($this->whenLoaded('children')),
         ];
     }
