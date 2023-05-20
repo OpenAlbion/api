@@ -18,6 +18,9 @@ enum SpellSlot: string
             SpellSlot::Q => 'First Slot',
             SpellSlot::W => 'Second Slot',
             SpellSlot::E => 'Third Slot',
+            SpellSlot::D => 'Fourth Slot',
+            SpellSlot::R => 'Fifth Slot',
+            SpellSlot::F => 'Sixth Slot',
             SpellSlot::PASSIVE => 'Passive',
         };
     }

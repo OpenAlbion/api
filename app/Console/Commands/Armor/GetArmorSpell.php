@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands\Armor;
 
+use App\Actions\ArmorSpell\UpdateArmorSpell;
 use App\Actions\Spell\UpdateSpell;
 use App\Models\Armor;
 use App\Services\DomCrawler\DomCrawlerService;
@@ -16,7 +17,7 @@ class GetArmorSpell extends Command
      *
      * @var string
      */
-    protected $signature = 'get:armor-spell';
+    protected $signature = 'get:armor-spell {start} {end}';
 
     /**
      * The console command description.
@@ -30,8 +31,11 @@ class GetArmorSpell extends Command
      */
     public function handle()
     {
+        $start = $this->argument('start');
+        $end = $this->argument('end');
         $armors = Armor::query()
             ->where('path', '!=', null)
+            ->whereBetween('id', [$start, $end])
             ->get();
 
         foreach ($armors as $armor) {
@@ -46,11 +50,11 @@ class GetArmorSpell extends Command
             foreach ($data as $item) {
                 $spell = app(UpdateSpell::class)
                     ->execute($item);
-                // app(UpdateWeaponSpell::class)
-                //     ->execute([
-                //         'weapon_id' => $armor->id,
-                //         'spell_id' => $spell->id,
-                //     ]);
+                app(UpdateArmorSpell::class)
+                    ->execute([
+                        'armor_id' => $armor->id,
+                        'spell_id' => $spell->id,
+                    ]);
             }
         }
     }

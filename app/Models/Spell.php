@@ -29,4 +29,9 @@ class Spell extends Model
     {
         return $this->hasMany(WeaponSpell::class);
     }
+
+    public function armorSpells()
+    {
+        return $this->hasMany(ArmorSpell::class);
+    }
 }

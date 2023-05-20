@@ -4,6 +4,8 @@ namespace App\Services\DomCrawler\Resources;
 
 use App\Enums\SpellSlot;
 use App\Services\DomCrawler\DomCrawlerService;
+use App\Services\Wiki\WikiService;
+use Illuminate\Support\Str;
 
 class ArmorResource
 {
@@ -52,14 +54,17 @@ class ArmorResource
 
         $spellContainer = $dom->filter('#mw-content-text > div > p');
         if ($spellContainer->count()) {
-            foreach (range(1, 4) as $i) {
+            foreach (range(1, 2) as $i) {
                 $slotContainer = $spellContainer->eq($i)->filter('a');
-                $slot = match ($i) {
-                    1 => SpellSlot::Q,
-                    2 => SpellSlot::W,
-                    3 => SpellSlot::E,
-                    4 => SpellSlot::PASSIVE
-                };
+                if (Str::contains($spellContainer->eq($i)->text(), 'D spell slot')) {
+                    $slot = SpellSlot::D;
+                } elseif (Str::contains($spellContainer->eq($i)->text(), 'R spell slot')) {
+                    $slot = SpellSlot::R;
+                } elseif (Str::contains($spellContainer->eq($i)->text(), 'F spell slot')) {
+                    $slot = SpellSlot::F;
+                } elseif (Str::contains($spellContainer->eq($i)->text(), 'passive slot')) {
+                    $slot = SpellSlot::PASSIVE;
+                }
                 foreach (range(0, $slotContainer->count() - 1) as $ii) {
                     if ($slotContainer->eq($ii)->count()) {
                         $spellHtml = app(WikiService::class)
@@ -110,5 +115,59 @@ class ArmorResource
         }
 
         return $spells;
+    }
+
+    public function statList(string $html): array
+    {
+        $dom = $this->service->buildCrawler($html);
+
+        $stats = [];
+        $statContainer = $dom->filter('#mw-content-text > div > table:nth-child(14)');
+
+        $isInvalidTable = function ($container) {
+            return ! ($container->count() && Str::contains($container->text(), 'Item Quality'));
+        };
+
+        if ($isInvalidTable) {
+            $statContainer = $dom->filter('#mw-content-text > div > table:nth-child(18)');
+        }
+
+        if ($isInvalidTable) {
+            $statContainer = $dom->filter('#mw-content-text > div > table:nth-child(15)');
+        }
+
+        if ($isInvalidTable) {
+            $statContainer = $dom->filter('#mw-content-text > div > table:nth-child(10)');
+        }
+
+        if ($isInvalidTable) {
+            $statContainer = $dom->filter('#mw-content-text > div > table.wikitable.sortable.jquery-tablesorter');
+        }
+
+        // must be last
+        if ($isInvalidTable) {
+            $statContainer = $dom->filter('#mw-content-text > div > table.wikitable.sortable');
+        }
+
+        $headers = [];
+        $headerContainer = $statContainer->filter('th');
+        foreach (range(1, $headerContainer->count() - 1) as $i) {
+            $headers[] = $headerContainer->eq($i)->text();
+        }
+        $bodyContainer = $statContainer->filter('tr');
+        foreach (range(2, $bodyContainer->count() - 1) as $i) {
+            $rowContainer = $bodyContainer->eq($i);
+            $details = [];
+            foreach (range(0, $rowContainer->filter('td')->count() - 1) as $ii) {
+                if ($rowContainer->filter('td')->eq($ii)->count()) {
+                    $details[$headers[$ii]] = $rowContainer->filter('td')->eq($ii)->text();
+                }
+            }
+            if ($details && ! Str::contains($details['Item Quality'], 'Version')) {
+                $stats[] = $details;
+            }
+        }
+
+        return $stats;
     }
 }
