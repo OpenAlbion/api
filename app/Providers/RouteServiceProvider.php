@@ -39,6 +39,7 @@ class RouteServiceProvider extends ServiceProvider
 
             Route::middleware(['api', 'appCheck'])
                 ->prefix('api/weaponry')
+                ->name('weaponry.')
                 ->group(base_path('routes/weaponry.php'));
 
             Route::middleware('web')
