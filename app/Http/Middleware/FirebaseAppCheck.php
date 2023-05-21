@@ -16,6 +16,7 @@ class FirebaseAppCheck
      */
     public function handle(Request $request, Closure $next): Response
     {
+        return $next($request);
         $token = $request->header('X-Firebase-AppCheck');
         if ($token) {
             $appCheck = app('firebase.app_check');

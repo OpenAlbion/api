@@ -27,4 +27,12 @@ class AccessoryResource
             url: '/wiki/Bag',
         );
     }
+
+    public function mountList(): ResponseInterface
+    {
+        return $this->service->get(
+            request: $this->service->buildRequest(),
+            url: '/wiki/Adept%27s_Giant_Stag',
+        );
+    }
 }

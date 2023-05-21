@@ -40,7 +40,7 @@ class GetAccessoryCategory extends Command
             ],
             [
                 'primary' => 'Bag',
-                'secondary' => null,
+                'secondary' => 'Normal Bags',
                 'path' => '/wiki/Bag',
             ],
         ];
@@ -52,15 +52,13 @@ class GetAccessoryCategory extends Command
                     'type' => CategoryType::ACCESSORY,
                     'path' => data_get($item, 'path'),
                 ]);
-            if (data_get($item, 'secondary')) {
-                app(UpdateCategory::class)
-                    ->execute([
-                        'name' => data_get($item, 'secondary'),
-                        'parent_id' => $category->id,
-                        'path' => data_get($item, 'path'),
-                        'type' => CategoryType::ACCESSORY,
-                    ]);
-            }
+            app(UpdateCategory::class)
+                ->execute([
+                    'name' => data_get($item, 'secondary'),
+                    'parent_id' => $category->id,
+                    'path' => data_get($item, 'path'),
+                    'type' => CategoryType::ACCESSORY,
+                ]);
         }
     }
 }

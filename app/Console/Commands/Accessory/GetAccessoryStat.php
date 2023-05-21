@@ -32,6 +32,7 @@ class GetAccessoryStat extends Command
     {
         $accessories = Accessory::query()
             ->where('path', '!=', null)
+            ->whereNotIn('path', ['/wiki/Yule_Ram', '/wiki/Bronze_Battle_Rhino'])
             ->get();
 
         foreach ($accessories as $accessory) {

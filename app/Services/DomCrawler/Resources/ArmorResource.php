@@ -128,24 +128,24 @@ class ArmorResource
             return ! ($container->count() && Str::contains($container->text(), 'Item Quality'));
         };
 
-        if ($isInvalidTable) {
+        if ($isInvalidTable($statContainer)) {
             $statContainer = $dom->filter('#mw-content-text > div > table:nth-child(18)');
         }
 
-        if ($isInvalidTable) {
+        if ($isInvalidTable($statContainer)) {
             $statContainer = $dom->filter('#mw-content-text > div > table:nth-child(15)');
         }
 
-        if ($isInvalidTable) {
+        if ($isInvalidTable($statContainer)) {
             $statContainer = $dom->filter('#mw-content-text > div > table:nth-child(10)');
         }
 
-        if ($isInvalidTable) {
+        if ($isInvalidTable($statContainer)) {
             $statContainer = $dom->filter('#mw-content-text > div > table.wikitable.sortable.jquery-tablesorter');
         }
 
         // must be last
-        if ($isInvalidTable) {
+        if ($isInvalidTable($statContainer)) {
             $statContainer = $dom->filter('#mw-content-text > div > table.wikitable.sortable');
         }
 

@@ -10,6 +10,7 @@ enum SpellSlot: string
     case D = 'd';
     case R = 'r';
     case F = 'f';
+    case MOUNT = 'mount';
     case PASSIVE = 'passive';
 
     public function slotName(): string
@@ -21,6 +22,7 @@ enum SpellSlot: string
             SpellSlot::D => 'Fourth Slot',
             SpellSlot::R => 'Fifth Slot',
             SpellSlot::F => 'Sixth Slot',
+            SpellSlot::MOUNT => 'Mount',
             SpellSlot::PASSIVE => 'Passive',
         };
     }

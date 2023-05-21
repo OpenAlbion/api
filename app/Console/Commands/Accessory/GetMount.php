@@ -3,26 +3,28 @@
 namespace App\Console\Commands\Accessory;
 
 use App\Actions\Accessory\UpdateAccessory;
-use App\Models\Category;
+use App\Actions\Category\UpdateCategory;
+use App\Enums\CategoryType;
 use App\Services\DomCrawler\DomCrawlerService;
 use App\Services\Wiki\WikiService;
 use Illuminate\Console\Command;
+use Illuminate\Support\Str;
 
-class GetBag extends Command
+class GetMount extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'get:bag';
+    protected $signature = 'get:mount';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Get Bag From Albion Wiki';
+    protected $description = 'Get Mount From Albion Wiki';
 
     /**
      * Execute the console command.
@@ -31,23 +33,27 @@ class GetBag extends Command
     {
         $html = app(WikiService::class)
             ->accessory()
-            ->bagList()
+            ->mountList()
             ->getBody()
             ->__toString();
 
         $data = app(DomCrawlerService::class)
             ->accessory()
-            ->bagList($html);
+            ->mountList($html);
 
-        $category = Category::query()
-            ->where('name', 'Bag')
-            ->firstOrFail();
-
-        $subcategory = Category::query()
-            ->where('name', 'Normal Bags')
-            ->firstOrFail();
-
+        $category = app(UpdateCategory::class)
+            ->execute([
+                'name' => 'Mount',
+                'type' => CategoryType::ACCESSORY,
+                'path' => '/wiki/Cloth_Robes',
+            ]);
         foreach ($data as $item) {
+            $subcategory = app(UpdateCategory::class)
+                ->execute([
+                    'name' => Str::replace(':', '', data_get($item, 'category')),
+                    'parent_id' => $category->id,
+                    'type' => CategoryType::ACCESSORY,
+                ]);
             app(UpdateAccessory::class)
                 ->execute(array_merge($item, [
                     'category_id' => $category->id,

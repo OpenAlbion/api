@@ -5,6 +5,7 @@ namespace App\Console\Commands\Migrations;
 use App\Models\Accessory;
 use App\Services\AlbionOnlineData\AlbionOnlineDataService;
 use Illuminate\Console\Command;
+use Illuminate\Support\Str;
 
 class UpdateAccessoryIdentifier extends Command
 {
@@ -29,11 +30,21 @@ class UpdateAccessoryIdentifier extends Command
     {
         $items = app(AlbionOnlineDataService::class)->items();
         $accessories = Accessory::query()
+            ->where('identifier', null)
             ->get();
         foreach ($accessories as $accessory) {
-            $item = $items->firstWhere('LocalizedNames.EN-US', $accessory->name);
+            $item = $items->filter(function ($item) use ($accessory) {
+                if (isset($item['LocalizedNames']['EN-US'])) {
+                    return strcasecmp($item['LocalizedNames']['EN-US'], Str::replace(' (Mount)', '', $accessory->name)) === 0;
+                }
+                return false;
+            })->first();
+            $name = optional($item)['UniqueName'];
+            if ($name == null) {
+                $name = Str::replace('@ITEMS_', '', $item['LocalizationNameVariable']);
+            }
             $accessory->update([
-                'identifier' => $item['UniqueName'],
+                'identifier' => Str::before($item['UniqueName'], '@'),
             ]);
         }
     }
