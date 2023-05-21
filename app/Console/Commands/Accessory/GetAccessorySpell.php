@@ -1,56 +1,55 @@
 <?php
 
-namespace App\Console\Commands\Armor;
+namespace App\Console\Commands\Accessory;
 
-use App\Actions\ArmorSpell\UpdateArmorSpell;
+use App\Actions\AccessorySpell\UpdateAccessorySpell;
 use App\Actions\Spell\UpdateSpell;
-use App\Models\Armor;
+use App\Models\Accessory;
 use App\Services\DomCrawler\DomCrawlerService;
 use App\Services\Wiki\WikiService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
 
-class GetArmorSpell extends Command
+class GetAccessorySpell extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'get:armor-spell';
+    protected $signature = 'get:accessory-spell';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Get Armor Spell From Albion Wiki';
+    protected $description = 'Get Accessory Spell From Albion Wiki';
 
     /**
      * Execute the console command.
      */
     public function handle()
     {
-        $armors = Armor::query()
+        $acessories = Accessory::query()
             ->where('path', '!=', null)
             ->get();
 
-        foreach ($armors as $armor) {
+        foreach ($acessories as $accessory) {
             $html = app(WikiService::class)
                 ->dynamic()
-                ->get(Str::wikiLink($armor->path))
+                ->get(Str::wikiLink($accessory->path))
                 ->getBody()
                 ->__toString();
             $data = app(DomCrawlerService::class)
-                ->armor()
+                ->accessory()
                 ->spellList($html);
-            dd('fuck');
             foreach ($data as $item) {
                 $spell = app(UpdateSpell::class)
                     ->execute($item);
-                app(UpdateArmorSpell::class)
+                app(UpdateAccessorySpell::class)
                     ->execute([
-                        'armor_id' => $armor->id,
+                        'accessory_id' => $accessory->id,
                         'spell_id' => $spell->id,
                     ]);
             }

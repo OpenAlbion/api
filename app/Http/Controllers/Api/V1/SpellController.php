@@ -70,4 +70,33 @@ class SpellController extends Controller
 
         return response()->json($data);
     }
+
+    public function byAccessoryId($accessoryId)
+    {
+        $data = cache()->remember(request()->generateCacheKey(), config('settings.cache_seconds'), function () use ($accessoryId) {
+            $spells = $this->model
+                ->query()
+                ->whereHas('accessorySpells', function ($query) use ($accessoryId) {
+                    $query->where('accessory_id', $accessoryId);
+                })
+                ->get();
+            $spellsResource = SpellResource::collection($spells)
+                ->toArray(request());
+
+            return [
+                'data' => collect($spellsResource)
+                    ->groupBy('slot')
+                    ->map(function ($group, $key) {
+                        return [
+                            'slot' => $key,
+                            'spells' => $group,
+                        ];
+                    })
+                    ->values()
+                    ->toArray(request()),
+            ];
+        });
+
+        return response()->json($data);
+    }
 }

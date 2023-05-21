@@ -11,9 +11,9 @@ return new class() extends Migration
      */
     public function up(): void
     {
-        Schema::create('armor_spells', function (Blueprint $table) {
+        Schema::create('accessory_spells', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('armor_id');
+            $table->foreignId('accessory_id');
             $table->foreignId('spell_id');
             $table->timestamps();
         });
@@ -24,6 +24,6 @@ return new class() extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('armor_spells');
+        Schema::dropIfExists('accessory_spells');
     }
 };

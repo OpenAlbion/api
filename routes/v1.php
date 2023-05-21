@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Api\V1\AccessoryController;
+use App\Http\Controllers\Api\V1\AccessoryStatController;
 use App\Http\Controllers\Api\V1\ArmorController;
 use App\Http\Controllers\Api\V1\ArmorStatController;
 use App\Http\Controllers\Api\V1\CategoryController;
@@ -37,6 +39,7 @@ Route::controller(SpellController::class)
     ->group(function () {
         Route::get('/weapon/{weaponId}', 'byWeaponId')->name('byWeaponId');
         Route::get('/armor/{armorId}', 'byArmorId')->name('byArmorId');
+        Route::get('/accessory/{accessoryId}', 'byAccessoryId')->name('byAccessoryId');
     });
 
 Route::controller(WeaponStatController::class)
@@ -58,4 +61,18 @@ Route::controller(ArmorController::class)
     ->prefix('armors')
     ->group(function () {
         Route::get('/', 'index')->name('index');
+    });
+
+Route::controller(AccessoryController::class)
+    ->name('accessories.')
+    ->prefix('accessories')
+    ->group(function () {
+        Route::get('/', 'index')->name('index');
+    });
+
+Route::controller(AccessoryStatController::class)
+    ->name('accessoryStats.')
+    ->prefix('accessory-stats')
+    ->group(function () {
+        Route::get('/accessory/{accessoryId}', 'byAccessoryId')->name('byAccessoryId');
     });

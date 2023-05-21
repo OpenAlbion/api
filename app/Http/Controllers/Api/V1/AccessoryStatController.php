@@ -3,26 +3,26 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\V1\ArmorStatResource;
-use App\Models\ArmorStat;
+use App\Http\Resources\V1\AccessoryStatResource;
+use App\Models\AccessoryStat;
 use App\Services\Render\RenderService;
 
-class ArmorStatController extends Controller
+class AccessoryStatController extends Controller
 {
     public function __construct(
-        private ArmorStat $model
+        private AccessoryStat $model
     ) {
     }
 
-    public function byArmorId($armorId)
+    public function byAccessoryId($accessoryId)
     {
-        $data = cache()->remember(request()->generateCacheKey(), config('settings.cache_seconds'), function () use ($armorId) {
+        $data = cache()->remember(request()->generateCacheKey(), config('settings.cache_seconds'), function () use ($accessoryId) {
             $stats = $this->model
                 ->query()
-                ->with('armor')
-                ->where('armor_id', $armorId)
+                ->with('accessory')
+                ->where('accessory_id', $accessoryId)
                 ->get();
-            $statsResource = ArmorStatResource::collection($stats)
+            $statsResource = AccessoryStatResource::collection($stats)
                 ->toArray(request());
 
             return [
@@ -31,7 +31,7 @@ class ArmorStatController extends Controller
                     ->map(function ($group, $key) {
                         return [
                             'enchantment' => $key,
-                            'icon' => app(RenderService::class)->setEnchantment($key)->renderItem($group->first()['armor']->identifier),
+                            'icon' => app(RenderService::class)->setEnchantment($key)->renderItem($group->first()['accessory']->identifier),
                             'stats' => $group,
                         ];
                     })

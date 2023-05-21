@@ -11,10 +11,10 @@ return new class() extends Migration
      */
     public function up(): void
     {
-        Schema::create('armors', function (Blueprint $table) {
+        Schema::create('accessories', function (Blueprint $table) {
             $table->id();
             $table->foreignId('category_id');
-            $table->foreignId('subcategory_id');
+            $table->foreignId('subcategory_id')->nullable();
             $table->string('name');
             $table->string('identifier')->nullable();
             $table->decimal('tier', 2, 1);
@@ -29,6 +29,6 @@ return new class() extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('armors');
+        Schema::dropIfExists('accessories');
     }
 };
