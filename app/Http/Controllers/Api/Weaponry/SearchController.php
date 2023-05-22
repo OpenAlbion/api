@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api\Weaponry;
 
-use App\Enums\CategoryType;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Weaponry\SearchResource;
 use App\Models\Accessory;
