@@ -3,6 +3,7 @@
 namespace App\Http\Resources\Weaponry;
 
 use App\Enums\CategoryType;
+use App\Models\Accessory;
 use App\Models\Armor;
 use App\Models\Weapon;
 use App\Services\Render\RenderService;
@@ -22,9 +23,9 @@ class SearchResource extends JsonResource
         if ($this->resource instanceof Weapon) {
             $type = CategoryType::WEAPON;
         } elseif ($this->resource instanceof Armor) {
-            $type = CategoryType::WEAPON;
-        } elseif ($this->resource instanceof Weapon) {
-            $type = CategoryType::WEAPON;
+            $type = CategoryType::ARMOR;
+        } elseif ($this->resource instanceof Accessory) {
+            $type = CategoryType::ACCESSORY;
         }
         return [
             'type' => $type,
