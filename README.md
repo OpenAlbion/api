@@ -2,6 +2,8 @@
 
 OpenAlbion is a free and open-source platform providing Albion Online data and an API.
 
+![OpenAlbion Preview](https://api.openalbion.com/preview.png)
+
 ## Documentation
 
 Read the full documentation at [openalbion.com](https://openalbion.com).
