@@ -16,6 +16,9 @@ class FirebaseAppCheck
      */
     public function handle(Request $request, Closure $next): Response
     {
+        $request->merge([
+            'app_check' => false,
+        ]);
         $token = $request->header('X-Firebase-AppCheck');
         if ($token) {
             $appCheck = app('firebase.app_check');
@@ -31,9 +34,6 @@ class FirebaseAppCheck
             } catch (FailedToVerifyAppCheckToken $e) {
             }
         }
-        $request->merge([
-            'app_check' => false,
-        ]);
 
         return response()->json([
             'message' => 'Invalid App Check',
