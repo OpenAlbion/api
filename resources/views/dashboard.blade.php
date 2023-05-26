@@ -16,7 +16,7 @@
                             </h2>
 
                             <p class="mt-1 text-sm text-gray-600">
-                                You can create a maximum of {{ config('settings.maximum_api_token') }} API tokens.
+                                You can create a maximum of {{ config('settings.maximum_api_token') }} API tokens. Each API token has a rate limit of 60 calls per minute.
                             </p>
                         </header>
 
