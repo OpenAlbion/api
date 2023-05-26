@@ -1,1 +1,1 @@
-<img src="/favicon.ico" class="w-9">
+<img src="https://res.cloudinary.com/pyaesoneaung/image/upload/v1685124260/openalbion/favicon.png" class="w-9">

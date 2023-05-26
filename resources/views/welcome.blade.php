@@ -41,7 +41,7 @@
 
             <div class="max-w-7xl mx-auto p-6 lg:p-8">
                 <div class="flex justify-center">
-                    <img src="/favicon.ico" class="h-16 w-auto bg-gray-100 dark:bg-gray-900 rounded-lg">
+                    <img src="https://res.cloudinary.com/pyaesoneaung/image/upload/v1685124260/openalbion/favicon.png" class="h-16 w-auto bg-gray-100 dark:bg-gray-900 rounded-lg">
                 </div>
 
                 <div class="mt-16">
@@ -113,7 +113,7 @@
                                 <h2 class="mt-6 text-xl font-semibold text-gray-900 dark:text-white">Data</h2>
 
                                 <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
-                                    Data in OpenAlbion is sourced from the Albion Online Wiki (updated as of 2023-05-16). Any inaccuracies in the database are our responsibility and not related to the Albion Online Wiki. Download our MySQL 8 database dump file on our <a class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500" href="https://github.com/OpenAlbion/api/releases">release page</a>.
+                                    Data in OpenAlbion is sourced from the Albion Online Wiki. Any inaccuracies in the database are our responsibility and not related to the Albion Online Wiki. Download our MySQL 8 database dump file on our <a class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500" href="https://github.com/OpenAlbion/api/releases">release page</a>.
                                 </p>
                             </div>
                         </div>
