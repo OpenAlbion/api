@@ -21,8 +21,9 @@ class SpellResource extends JsonResource
             'slot' => $this->slot->slotName(),
             'preview' => $this->preview,
             'icon' => app(RenderService::class)->renderSpell($this->identifier),
+            'attributes' => $this->attributes,
             'description' => strip_tags($this->description),
-            'description_html' => $this->description,
+            'description_html' => $this->description
         ];
     }
 }
