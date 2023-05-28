@@ -18,6 +18,9 @@
                             <p class="mt-1 text-sm text-gray-600">
                                 You can create a maximum of {{ config('settings.maximum_api_token') }} API tokens. Each API token has a rate limit of 60 calls per minute.
                             </p>
+                            <p class="mt-1 text-sm text-gray-600">
+                                If you find that OpenAlbion has been useful for your project, please consider mentioning OpenAlbion on your project.
+                            </p>
                         </header>
 
                         <form method="post" action="{{ route('apiTokens.store') }}" class="mt-6 space-y-6">
@@ -33,7 +36,7 @@
                                 @if($tokens->count() >= config('settings.maximum_api_token')) 
                                     <x-primary-button class="disabled:opacity-25" disabled>{{ __('Save') }}</x-primary-button>
                                 @else
-                                    <x-primary-button>{{ __('Save') }}</x-primary-button>
+                                    <x-primary-button>{{ __('Create') }}</x-primary-button>
                                 @endif
                                 
                             </div>
