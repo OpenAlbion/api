@@ -9,6 +9,8 @@ class AodController extends Controller
 {
     public function itemPrice($region, $itemId)
     {
+        // this is not public api, only use for app
+        // fetch data form albion online data project and response to application, we do not modify response, we just cache data for 3 minutes to optimize api performance
         $response = cache()->remember(
             request()->generateCacheKey(),
             config('settings.cache_seconds'),
