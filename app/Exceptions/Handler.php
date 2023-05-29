@@ -28,6 +28,7 @@ class Handler extends ExceptionHandler
             if (config('slack-alerts.webhook_urls.error')) {
                 SlackAlert::to('error')->message(
                     "*{$e->getMessage()}*\n"
+                    . 'Request: ' . request()->fullUrl() . "\n"
                     . "File: `{$e->getFile()}`\n"
                     . "Line: `{$e->getLine()}`\n"
                 );
