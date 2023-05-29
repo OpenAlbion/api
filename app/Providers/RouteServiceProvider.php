@@ -29,7 +29,8 @@ class RouteServiceProvider extends ServiceProvider
         });
 
         RateLimiter::for('api-token', function (Request $request) {
-            return Limit::perMinute(60)->by($request->apiTokenCacheKey());
+            $apiToken = $request->header('Authorization') ?: $request->query('api_token');
+            return Limit::perMinute(60)->by($apiToken ?: $request->ip());
         });
 
         $this->routes(function () {
