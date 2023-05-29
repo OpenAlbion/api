@@ -97,7 +97,7 @@
 
                                 <h2 class="mt-6 text-xl font-semibold text-gray-900 dark:text-white">Api Token</h2>
 
-                                <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">Our API offers <strong>free</strong> and <strong>unlimited</strong> access to OpenAlbion's data. However, we have server bills to pay, and we appreciate any <a class="text-red-500" href="https://ko-fi.com/openalbion">donations</a> that can help us cover these costs.
+                                <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">Our API offers <strong>free</strong> and <strong>unlimited</strong> access to OpenAlbion's data. However, we have server bills to pay, and we appreciate any <a class="underline text-red-500 hover:text-red-600" href="https://ko-fi.com/openalbion">donations</a> that can help us cover these costs.
                                 </p>
                             </div>
                         </div>
