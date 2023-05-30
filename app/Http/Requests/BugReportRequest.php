@@ -24,7 +24,7 @@ class BugReportRequest extends FormRequest
         return [
             'category' => ['required', 'max:50'],
             'description' => ['required', 'max:250'],
-            'debug' => ['required', 'array']
+            'debug' => ['required', 'array'],
         ];
     }
 }

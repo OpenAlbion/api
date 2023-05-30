@@ -27,6 +27,7 @@ class SearchResource extends JsonResource
         } elseif ($this->resource instanceof Accessory) {
             $type = CategoryType::ACCESSORY;
         }
+
         return [
             'type' => $type,
             'type_id' => $this->id,

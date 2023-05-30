@@ -57,7 +57,7 @@ class GetMount extends Command
             app(UpdateAccessory::class)
                 ->execute(array_merge($item, [
                     'category_id' => $category->id,
-                    'subcategory_id' => $subcategory->id
+                    'subcategory_id' => $subcategory->id,
                 ]));
         }
     }

@@ -19,7 +19,7 @@ class CategoryResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'type' => $this->type,
-            'path' => $this->when($request->app_check, Str::plural($this->type->value)),
+            'path' => $this->when($request->weaponry, Str::plural($this->type->value)),
             'subcategories' => CategoryResource::collection($this->whenLoaded('children')),
         ];
     }

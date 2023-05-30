@@ -37,6 +37,7 @@ class UpdateAccessoryIdentifier extends Command
                 if (isset($item['LocalizedNames']['EN-US'])) {
                     return strcasecmp($item['LocalizedNames']['EN-US'], Str::replace(' (Mount)', '', $accessory->name)) === 0;
                 }
+
                 return false;
             })->first();
             $name = optional($item)['UniqueName'];

@@ -64,6 +64,6 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'apiToken' => \App\Http\Middleware\CheckApiToken::class,
-        'appCheck' => \App\Http\Middleware\FirebaseAppCheck::class,
+        'weaponryKey' => \App\Http\Middleware\CheckWeaponryKey::class,
     ];
 }

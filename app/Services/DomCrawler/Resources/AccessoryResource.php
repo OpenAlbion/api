@@ -102,7 +102,7 @@ class AccessoryResource
 
         $spellContainer = $dom->filter('#mw-content-text > div > ul > li');
 
-        foreach (range(0, $spellContainer->count() -1) as $s) {
+        foreach (range(0, $spellContainer->count() - 1) as $s) {
             $spell = $spellContainer->eq($s);
             if (Str::contains($spell->text(), 'unique abilites', true) || Str::contains($spell->text(), 'Unique abilities', true)) {
                 $abilities = $spell->filter('a');
@@ -111,10 +111,10 @@ class AccessoryResource
                     foreach (range(0, $abilities->count() - 1) as $i) {
                         if (Str::contains(Str::wikiLink($abilities->eq($i)->attr('href')), '/wiki/')) {
                             $spellHtml = app(WikiService::class)
-                        ->dynamic()
-                        ->get(Str::wikiLink($abilities->eq($i)->attr('href')))
-                        ->getBody()
-                        ->__toString();
+                                ->dynamic()
+                                ->get(Str::wikiLink($abilities->eq($i)->attr('href')))
+                                ->getBody()
+                                ->__toString();
                             $spellDom = $this->service->buildCrawler($spellHtml);
                             $attributes = [];
                             $attributeTable = $spellDom->filter('#mw-content-text > div > table > tbody > tr');
@@ -176,7 +176,6 @@ class AccessoryResource
             }
         }
 
-
         return $spells;
     }
 
@@ -209,7 +208,7 @@ class AccessoryResource
 
         if ($isInvalidTable($statContainer)) {
             $statContainer = $dom->filter('#mw-content-text > div > table:nth-child(6)');
-        };
+        }
 
         // must be last
         if ($isInvalidTable($statContainer)) {
@@ -258,7 +257,7 @@ class AccessoryResource
         foreach (range(0, $mountContainer->count() - 1) as $i) {
             $category = $mountContainer->eq($i)->filter('td')->eq(0)->text();
             $itemContainer = $mountContainer->eq($i)->filter('td')->eq(1)->filter('span');
-            foreach (range(0, $itemContainer->count() -1) as $ii) {
+            foreach (range(0, $itemContainer->count() - 1) as $ii) {
                 $name = pathinfo(basename($itemContainer->eq($ii)->filter('img')->attr('src')), PATHINFO_FILENAME);
                 $mounts[] = [
                     'category' => $category,
@@ -267,7 +266,7 @@ class AccessoryResource
                     'icon' => null,
                     'tier' => null,
                     'item_power' => null,
-                    'path' => $itemContainer->eq($ii)->filter('a')->attr('href')
+                    'path' => $itemContainer->eq($ii)->filter('a')->attr('href'),
                 ];
             }
         }

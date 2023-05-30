@@ -18,17 +18,17 @@ class SearchController extends Controller
             60,
             function () use ($request) {
                 $weapons = Weapon::query()
-                    ->where('name', 'like', '%' . $request->input('search') . '%')
+                    ->where('name', 'like', '%'.$request->input('search').'%')
                     ->limit(3)
                     ->get();
 
                 $armors = Armor::query()
-                    ->where('name', 'like', '%' . $request->input('search') . '%')
+                    ->where('name', 'like', '%'.$request->input('search').'%')
                     ->limit(3)
                     ->get();
 
                 $accessories = Accessory::query()
-                    ->where('name', 'like', '%' . $request->input('search') . '%')
+                    ->where('name', 'like', '%'.$request->input('search').'%')
                     ->limit(3)
                     ->get();
 

@@ -30,6 +30,7 @@ class RouteServiceProvider extends ServiceProvider
 
         RateLimiter::for('api-token', function (Request $request) {
             $apiToken = $request->header('Authorization') ?: $request->query('api_token');
+
             return Limit::perMinute(60)->by($apiToken ?: $request->ip());
         });
 
@@ -42,7 +43,7 @@ class RouteServiceProvider extends ServiceProvider
                 ->prefix('api/v1')
                 ->group(base_path('routes/v1.php'));
 
-            Route::middleware(['api', 'appCheck'])
+            Route::middleware(['api', 'weaponryKey'])
                 ->prefix('api/weaponry')
                 ->name('weaponry.')
                 ->group(base_path('routes/weaponry.php'));

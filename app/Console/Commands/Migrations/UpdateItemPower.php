@@ -41,7 +41,7 @@ class UpdateItemPower extends Command
             $ip = collect($weapon->weaponStats->first()->stats)->where('name', 'Item Power')->first();
             if ($ip) {
                 $weapon->update([
-                    'item_power' => $ip['value']
+                    'item_power' => $ip['value'],
                 ]);
             }
         }
@@ -59,7 +59,7 @@ class UpdateItemPower extends Command
             $ip = collect($armor->armorStats->first()->stats)->where('name', 'Item Power')->first();
             if ($ip) {
                 $armor->update([
-                    'item_power' => $ip['value']
+                    'item_power' => $ip['value'],
                 ]);
             }
         }
@@ -77,7 +77,7 @@ class UpdateItemPower extends Command
             $ip = collect($accessory->accessoryStats->first()->stats)->where('name', 'Item Power')->first();
             if ($ip) {
                 $accessory->update([
-                    'item_power' => $ip['value'] ?: null
+                    'item_power' => $ip['value'] ?: null,
                 ]);
             }
         }
