@@ -10,8 +10,8 @@ class ApplicationController extends Controller
     {
         return response()->json([
             'title' => 'Update Available!',
-            'description' => 'Removed firebase app check.',
-            'version' => '1.0.3',
+            'description' => 'Improve: UI',
+            'version' => '1.0.4',
             'force' => true,
         ]);
     }
