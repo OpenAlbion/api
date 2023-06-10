@@ -28,4 +28,4 @@ Route::controller(ApplicationController::class)
         Route::get('version-check', 'versionCheck')->name('versionCheck');
     });
 
-require __DIR__.'/v1.php';
+require __DIR__.'/v2.php';
