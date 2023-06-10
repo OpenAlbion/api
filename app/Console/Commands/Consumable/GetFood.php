@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Console\Commands\Armor;
+namespace App\Console\Commands\Consumable;
 
-use App\Actions\Armor\UpdateArmor;
+use App\Actions\Consumable\UpdateConsumable;
 use App\Enums\CategoryType;
 use App\Models\Category;
 use App\Services\DomCrawler\DomCrawlerService;
@@ -10,21 +10,21 @@ use App\Services\Wiki\WikiService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
 
-class GetArmor extends Command
+class GetFood extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'get:armor';
+    protected $signature = 'get:food';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Get Armor From Albion Wiki';
+    protected $description = 'Get Food From Albion Wiki';
 
     /**
      * Execute the console command.
@@ -34,7 +34,7 @@ class GetArmor extends Command
         $subcategories = Category::query()
             ->has('parent')
             ->with('parent')
-            ->where('type', CategoryType::ARMOR)
+            ->where('type', CategoryType::Consumable)
             ->where('path', '!=', null)
             ->get();
         foreach ($subcategories as $subcategory) {
@@ -45,10 +45,10 @@ class GetArmor extends Command
                 ->__toString();
 
             $data = app(DomCrawlerService::class)
-                ->armor()
-                ->list($html);
+                ->consumable()
+                ->foodList($html);
             foreach ($data as $item) {
-                app(UpdateArmor::class)
+                app(UpdateConsumable::class)
                     ->execute(array_merge($item, [
                         'category_id' => $subcategory->parent->id,
                         'subcategory_id' => $subcategory->id,

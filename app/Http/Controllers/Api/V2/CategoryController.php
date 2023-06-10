@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1;
+namespace App\Http\Controllers\Api\V2;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\V1\CategoryResource;
+use App\Http\Resources\V2\CategoryResource;
 use App\Models\Category;
 use Illuminate\Http\Request;
 
@@ -21,7 +21,7 @@ class CategoryController extends Controller
                 ->query()
                 ->with('children')
                 ->where('parent_id', null)
-                ->where('version', '<=', 1)
+                ->where('version', '<=', 2)
                 ->when($request->input('type'), function ($query, $type) {
                     $query->where('type', $type);
                 })

@@ -8,4 +8,5 @@ enum CategoryType: string
     case ARMOR = 'armor';
     case ACCESSORY = 'accessory';
     case MOUNT = 'mount';
+    case Consumable = 'consumable';
 }

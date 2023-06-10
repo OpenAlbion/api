@@ -5,6 +5,7 @@ namespace App\Services\DomCrawler;
 use App\Services\Concerns\BuildCrawler;
 use App\Services\DomCrawler\Resources\AccessoryResource;
 use App\Services\DomCrawler\Resources\ArmorResource;
+use App\Services\DomCrawler\Resources\ConsumableResource;
 use App\Services\DomCrawler\Resources\SpellResource;
 use App\Services\DomCrawler\Resources\WeaponResource;
 
@@ -29,6 +30,13 @@ class DomCrawlerService
     public function accessory(): AccessoryResource
     {
         return new AccessoryResource(
+            service: $this,
+        );
+    }
+
+    public function consumable(): ConsumableResource
+    {
+        return new ConsumableResource(
             service: $this,
         );
     }

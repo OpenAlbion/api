@@ -17,6 +17,7 @@ class Category extends Model
         'parent_id',
         'path',
         'type',
+        'version',
     ];
 
     protected $casts = [

@@ -30,6 +30,7 @@ class UpdateCategory
             'parent_id' => data_get($item, 'parent_id'),
             'path' => Str::wikiPath(data_get($item, 'path')),
             'type' => data_get($item, 'type'),
+            'version' => data_get($item, 'version', 1),
         ];
 
         return [$search, $update];
