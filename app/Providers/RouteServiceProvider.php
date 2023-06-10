@@ -41,6 +41,7 @@ class RouteServiceProvider extends ServiceProvider
 
             Route::middleware(['api', 'apiToken'])
                 ->prefix('api/v2')
+                ->name('v2.')
                 ->group(base_path('routes/v2.php'));
 
             Route::middleware(['api', 'weaponryKey'])
