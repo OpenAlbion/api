@@ -49,6 +49,11 @@ class RouteServiceProvider extends ServiceProvider
                 ->name('weaponry.')
                 ->group(base_path('routes/weaponry.php'));
 
+            Route::middleware(['api', 'weaponryKey'])
+                ->prefix('api/weaponryV2')
+                ->name('weaponryV2.')
+                ->group(base_path('routes/weaponryV2.php'));
+
             Route::middleware('web')
                 ->group(base_path('routes/web.php'));
         });
