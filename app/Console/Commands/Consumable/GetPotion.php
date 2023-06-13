@@ -162,7 +162,7 @@ class GetPotion extends Command
                 'item_power' => '980',
                 'path' => '/wiki/Major_Sticky_Potion',
                 'category' => 'Potions',
-                'subcategory' => 'Resistance',
+                'subcategory' => 'Sticky',
             ],
             [
                 'name' => 'Focus Restoration Potion',
