@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\V2\ArmorController;
 use App\Http\Controllers\Api\V2\ArmorStatController;
 use App\Http\Controllers\Api\V2\CategoryController;
 use App\Http\Controllers\Api\V2\ConsumableController;
+use App\Http\Controllers\Api\V2\ConsumableCraftingController;
 use App\Http\Controllers\Api\V2\ConsumableStatController;
 use App\Http\Controllers\Api\V2\SpellController;
 use App\Http\Controllers\Api\V2\WeaponController;
@@ -89,6 +90,13 @@ Route::controller(ConsumableController::class)
 Route::controller(ConsumableStatController::class)
     ->name('consumableStats.')
     ->prefix('consumable-stats')
+    ->group(function () {
+        Route::get('/consumable/{consumableId}', 'byConsumableId')->name('byConsumableId');
+    });
+
+Route::controller(ConsumableCraftingController::class)
+    ->name('consumableCraftings.')
+    ->prefix('consumable-craftings')
     ->group(function () {
         Route::get('/consumable/{consumableId}', 'byConsumableId')->name('byConsumableId');
     });

@@ -36,7 +36,6 @@ class ConsumableResource
     {
         $dom = $this->service->buildCrawler($html);
 
-        $stats = [];
         $statContainer = $dom->filter('#mw-content-text > div > table:nth-child(12)');
 
         $isInvalidTable = function ($container) {
@@ -66,7 +65,6 @@ class ConsumableResource
     {
         $dom = $this->service->buildCrawler($html);
 
-        $stats = [];
         $statContainer = $dom->filter('#mw-content-text > div > table:nth-child(10)');
 
         $isInvalidTable = function ($container) {
@@ -97,9 +95,76 @@ class ConsumableResource
         $dom = $this->service->buildCrawler($html);
         $container = $dom->filter('#mw-content-text > div > p');
         $info = '';
-        foreach(range(1, $container->count() - 2) as $i) {
+        foreach (range(1, $container->count() - 2) as $i) {
             $info .= "{$container->eq($i)->text()}\n";
         }
+
         return $info;
+    }
+
+    public function foodCraftingList(string $html)
+    {
+        $dom = $this->service->buildCrawler($html);
+
+        $infoContainer = $dom->filter('#mw-content-text > div > p');
+        $perCraft = $infoContainer->eq($infoContainer->count() - 2)->text();
+        $perCraft = Str::before(Str::after($perCraft, 'per craft: '), ' (');
+
+        $craftContainer = $dom->filter('#mw-content-text > div > table:nth-child(10)');
+
+        $isInvalidTable = function ($container) {
+            return ! ($container->count());
+        };
+
+        $colCount = $craftContainer->filter('tr')->eq(1)->filter('th')->count();
+
+        $rowCount = $craftContainer->filter('tr')->count();
+        $crafts = [];
+        foreach (range(0, $colCount - 1) as $col) {
+            $currentCraft = [];
+            foreach (range(2, $rowCount - 1) as $row) {
+                $tier = $craftContainer->filter('tr')->eq(1)->filter('th')->eq($col)->text();
+                $header = $craftContainer->filter('tr')->eq($row)->filter('td')->eq(0)->text();
+                $currentCraft[$tier]['Per Craft'] = $perCraft;
+                $currentCraft[$tier]['Tier'] = Str::replace('Tier ', '', $tier);
+                $currentCraft[$tier][$header] = $craftContainer->filter('tr')->eq($row)->filter('td')->eq($col + 1)->text();
+            }
+            $crafts[] = $currentCraft[$tier];
+        }
+
+        return $crafts;
+    }
+
+    public function potionCraftingList(string $html)
+    {
+        $dom = $this->service->buildCrawler($html);
+
+        $infoContainer = $dom->filter('#mw-content-text > div > p');
+        $perCraft = $infoContainer->eq($infoContainer->count() - 2)->text();
+        $perCraft = Str::before(Str::after($perCraft, 'per craft: '), ' (');
+
+        $craftContainer = $dom->filter('#mw-content-text > div > table:nth-child(8)');
+
+        $isInvalidTable = function ($container) {
+            return ! ($container->count());
+        };
+
+        $colCount = $craftContainer->filter('tr')->eq(1)->filter('th')->count();
+
+        $rowCount = $craftContainer->filter('tr')->count();
+        $crafts = [];
+        foreach (range(0, $colCount - 1) as $col) {
+            $currentCraft = [];
+            foreach (range(2, $rowCount - 1) as $row) {
+                $tier = $craftContainer->filter('tr')->eq(1)->filter('th')->eq($col)->text();
+                $header = $craftContainer->filter('tr')->eq($row)->filter('td')->eq(0)->text();
+                $currentCraft[$tier]['Per Craft'] = $perCraft;
+                $currentCraft[$tier]['Tier'] = Str::replace('Tier ', '', $tier);
+                $currentCraft[$tier][$header] = $craftContainer->filter('tr')->eq($row)->filter('td')->eq($col + 1)->text();
+            }
+            $crafts[] = $currentCraft[$tier];
+        }
+
+        return $crafts;
     }
 }

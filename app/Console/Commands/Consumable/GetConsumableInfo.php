@@ -43,7 +43,7 @@ class GetConsumableInfo extends Command
                 ->consumable()
                 ->info($html);
             $consumable->update([
-                'info' => $info
+                'info' => $info,
             ]);
         }
     }
