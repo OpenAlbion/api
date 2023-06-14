@@ -32,7 +32,7 @@ class ConsumableCraftingController extends Controller
                         return [
                             'enchantment' => $key,
                             'icon' => app(RenderService::class)->setEnchantment($key)->renderItem($group->first()['consumable']->identifier),
-                            'craftings' => $group->first(),
+                            'crafting' => $group->first(),
                         ];
                     })
                     ->values()
