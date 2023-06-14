@@ -19,6 +19,7 @@ class Consumable extends Model
         'tier',
         'item_power',
         'path',
+        'info'
     ];
 
     public function category(): BelongsTo

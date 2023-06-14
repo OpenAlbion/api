@@ -22,6 +22,7 @@ class ConsumableResource extends JsonResource
             'item_power' => $this->item_power,
             'identifier' => $this->identifier,
             'icon' => app(RenderService::class)->renderItem($this->identifier),
+            'info' => $this->info,
         ];
     }
 }

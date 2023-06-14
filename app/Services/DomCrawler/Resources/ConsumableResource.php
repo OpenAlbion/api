@@ -91,4 +91,15 @@ class ConsumableResource
 
         return $stats;
     }
+
+    public function info(string $html): string
+    {
+        $dom = $this->service->buildCrawler($html);
+        $container = $dom->filter('#mw-content-text > div > p');
+        $info = '';
+        foreach(range(1, $container->count() - 2) as $i) {
+            $info .= "{$container->eq($i)->text()}\n";
+        }
+        return $info;
+    }
 }
