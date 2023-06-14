@@ -16,7 +16,7 @@ class ConsumableCraftingController extends Controller
 
     public function byConsumableId($consumableId)
     {
-        $data = cache()->remember(request()->generateCacheKey() . 'test', 0, function () use ($consumableId) {
+        $data = cache()->remember(request()->generateCacheKey(), config('settings.cache_seconds'), function () use ($consumableId) {
             $craftings = $this->model
                 ->query()
                 ->with('consumable')
