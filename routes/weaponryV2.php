@@ -15,7 +15,7 @@ Route::controller(AodController::class)
 
 Route::controller(SearchController::class)
     ->group(function () {
-        Route::get('search', 'search')->name('search');
+        Route::get('search', 'v2Search')->name('search');
     });
 
 Route::controller(BugReportController::class)

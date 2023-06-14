@@ -34,7 +34,7 @@ class GetFood extends Command
         $subcategories = Category::query()
             ->has('parent')
             ->with('parent')
-            ->where('type', CategoryType::Consumable)
+            ->where('type', CategoryType::CONSUMABLE)
             ->where('path', '!=', null)
             ->get();
         foreach ($subcategories as $subcategory) {

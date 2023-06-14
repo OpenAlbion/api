@@ -5,6 +5,7 @@ namespace App\Http\Resources\Weaponry;
 use App\Enums\CategoryType;
 use App\Models\Accessory;
 use App\Models\Armor;
+use App\Models\Consumable;
 use App\Models\Weapon;
 use App\Services\Render\RenderService;
 use Illuminate\Http\Request;
@@ -26,6 +27,8 @@ class SearchResource extends JsonResource
             $type = CategoryType::ARMOR;
         } elseif ($this->resource instanceof Accessory) {
             $type = CategoryType::ACCESSORY;
+        } elseif ($this->resource instanceof Consumable) {
+            $type = CategoryType::CONSUMABLE;
         }
 
         return [

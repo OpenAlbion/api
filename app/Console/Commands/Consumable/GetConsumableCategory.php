@@ -109,7 +109,7 @@ class GetConsumableCategory extends Command
             $category = app(UpdateCategory::class)
                 ->execute([
                     'name' => data_get($item, 'primary'),
-                    'type' => CategoryType::Consumable,
+                    'type' => CategoryType::CONSUMABLE,
                     'path' => data_get($item, 'path'),
                     'version' => 2,
                 ]);
@@ -118,7 +118,7 @@ class GetConsumableCategory extends Command
                     'name' => data_get($item, 'secondary'),
                     'parent_id' => $category->id,
                     'path' => data_get($item, 'path'),
-                    'type' => CategoryType::Consumable,
+                    'type' => CategoryType::CONSUMABLE,
                     'version' => 2,
                 ]);
         }
