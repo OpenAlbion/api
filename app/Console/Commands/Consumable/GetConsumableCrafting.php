@@ -77,7 +77,7 @@ class GetConsumableCrafting extends Command
                                 'name' => $key,
                                 'identifier' => $name,
                                 'icon' => app(RenderService::class)->renderItem($name),
-                                'value' => $value,
+                                'value' => (int) $value,
                             ];
                         }
                     }
@@ -130,7 +130,7 @@ class GetConsumableCrafting extends Command
                                 'name' => $key,
                                 'identifier' => $name,
                                 'icon' => app(RenderService::class)->renderItem($name),
-                                'value' => $value,
+                                'value' => (int) $value,
                             ];
                         }
                     }
