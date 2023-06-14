@@ -16,7 +16,7 @@ class ConsumableCraftingController extends Controller
 
     public function byConsumableId($consumableId)
     {
-        $data = cache()->remember(request()->generateCacheKey(), config('settings.cache_seconds'), function () use ($consumableId) {
+        $data = cache()->remember(request()->generateCacheKey() . 'test', 0, function () use ($consumableId) {
             $craftings = $this->model
                 ->query()
                 ->with('consumable')
@@ -32,7 +32,7 @@ class ConsumableCraftingController extends Controller
                         return [
                             'enchantment' => $key,
                             'icon' => app(RenderService::class)->setEnchantment($key)->renderItem($group->first()['consumable']->identifier),
-                            'craftings' => $group,
+                            'craftings' => $group->first(),
                         ];
                     })
                     ->values()
