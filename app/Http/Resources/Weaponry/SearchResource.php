@@ -38,6 +38,7 @@ class SearchResource extends JsonResource
             'tier' => $this->tier,
             'item_power' => $this->item_power,
             'identifier' => $this->identifier,
+            'info' => $this->info,
             'icon' => app(RenderService::class)->renderItem($this->identifier),
         ];
     }
