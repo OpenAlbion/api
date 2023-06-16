@@ -26,7 +26,6 @@ Route::controller(BugReportController::class)
 Route::controller(ApplicationController::class)
     ->group(function () {
         Route::get('version-check', 'versionCheck')->name('versionCheck');
-        Route::get('download', 'download')->name('download');
     });
 
 require __DIR__.'/v2.php';
