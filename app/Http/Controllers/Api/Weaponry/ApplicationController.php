@@ -10,8 +10,8 @@ class ApplicationController extends Controller
     {
         return response()->json([
             'title' => 'Update Available!',
-            'description' => 'Added: Social Account',
-            'version' => '1.0.5',
+            'description' => "[+] Add Food & Potions\n[+] Add Crafting Process",
+            'version' => '1.0.7',
             'force' => false,
         ]);
     }
