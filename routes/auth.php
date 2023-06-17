@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
     Route::get('/auth/google/redirect', [GoogleSignInController::class, 'redirect'])
-        ->name('google.redirect');
+        ->name('google.redirect')->name('login');
 
     Route::get('/auth/google/callback', [GoogleSignInController::class, 'callback'])
         ->name('google.callback');
