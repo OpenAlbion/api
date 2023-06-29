@@ -52,22 +52,22 @@ class SearchController extends Controller
             function () use ($request) {
                 $weapons = Weapon::query()
                     ->where('name', 'like', '%'.$request->input('search').'%')
-                    ->limit(3)
+                    ->limit($request->input('limit', 3))
                     ->get();
 
                 $armors = Armor::query()
                     ->where('name', 'like', '%'.$request->input('search').'%')
-                    ->limit(3)
+                    ->limit($request->input('limit', 3))
                     ->get();
 
                 $accessories = Accessory::query()
                     ->where('name', 'like', '%'.$request->input('search').'%')
-                    ->limit(3)
+                    ->limit($request->input('limit', 3))
                     ->get();
 
                 $consumables = Consumable::query()
                     ->where('name', 'like', '%'.$request->input('search').'%')
-                    ->limit(3)
+                    ->limit($request->input('limit', 3))
                     ->get();
 
                 return [
