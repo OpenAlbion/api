@@ -15,7 +15,9 @@ class AodController extends Controller
             request()->generateCacheKey(),
             config('settings.cache_seconds'),
             function () use ($region, $itemId) {
-                return Http::get("http://{$region}.albion-online-data.com/api/v2/stats/prices/{$itemId}.json", request()->all())->json();
+                return Http::timeout(3)
+                    ->get("http://{$region}.albion-online-data.com/api/v2/stats/prices/{$itemId}.json", request()->all())
+                    ->json();
             }
         );
 
