@@ -76,6 +76,29 @@ class WeaponResource
         return $weapons;
     }
 
+    public function offHandlist(string $html): array
+    {
+        $dom = $this->service->buildCrawler($html);
+
+        $weapons = [];
+
+        $weaponContainer = $dom->filter('#mw-content-text > div > table:nth-child(19) > tbody > tr')->eq(1)->filter('td');
+        if ($weaponContainer->count()) {
+            foreach (range(0, $weaponContainer->count() - 1) as $i) {
+                $img = $weaponContainer->eq($i)->filter('img')->attr('src');
+                $weapons[] = [
+                    'name' => Str::albionIdentifier($img),
+                    'icon' => '',
+                    'tier' => Str::albionTier(Str::albionIdentifier($img)),
+                    'item_power' => '',
+                    'path' => $weaponContainer->eq($i)->filter('a')->attr('href'),
+                ];
+            }
+        }
+
+        return $weapons;
+    }
+
     public function spellList(string $html): array
     {
         $dom = $this->service->buildCrawler($html);
