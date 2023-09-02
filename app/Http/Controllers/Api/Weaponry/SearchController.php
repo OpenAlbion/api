@@ -8,6 +8,7 @@ use App\Models\Accessory;
 use App\Models\Armor;
 use App\Models\Consumable;
 use App\Models\Weapon;
+use App\Search\Items;
 use Illuminate\Http\Request;
 
 class SearchController extends Controller
@@ -50,32 +51,9 @@ class SearchController extends Controller
             $request->generateCacheKey(),
             60,
             function () use ($request) {
-                $weapons = Weapon::query()
-                    ->where('name', 'like', '%'.$request->input('search').'%')
-                    ->limit($request->input('limit', 3))
-                    ->get();
+                $items = Items::search($request->input('search'))->get();
 
-                $armors = Armor::query()
-                    ->where('name', 'like', '%'.$request->input('search').'%')
-                    ->limit($request->input('limit', 3))
-                    ->get();
-
-                $accessories = Accessory::query()
-                    ->where('name', 'like', '%'.$request->input('search').'%')
-                    ->limit($request->input('limit', 3))
-                    ->get();
-
-                $consumables = Consumable::query()
-                    ->where('name', 'like', '%'.$request->input('search').'%')
-                    ->limit($request->input('limit', 3))
-                    ->get();
-
-                return [
-                    ...SearchResource::collection($weapons)->toArray($request),
-                    ...SearchResource::collection($armors)->toArray($request),
-                    ...SearchResource::collection($accessories)->toArray($request),
-                    ...SearchResource::collection($consumables)->toArray($request),
-                ];
+                return SearchResource::collection($items);
             }
         );
 
