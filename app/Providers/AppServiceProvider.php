@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Search\Items;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
+use Algolia\ScoutExtended\Searchable\Aggregator;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -21,5 +23,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Model::preventLazyLoading(! app()->isProduction());
+
+        Items::bootSearchable();
     }
 }
