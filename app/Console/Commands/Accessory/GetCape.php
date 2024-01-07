@@ -32,8 +32,7 @@ class GetCape extends Command
         $html = app(WikiService::class)
             ->accessory()
             ->capeList()
-            ->getBody()
-            ->__toString();
+            ->toHtml();
 
         $data = app(DomCrawlerService::class)
             ->accessory()

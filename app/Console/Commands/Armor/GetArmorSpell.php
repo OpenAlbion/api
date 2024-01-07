@@ -39,8 +39,7 @@ class GetArmorSpell extends Command
             $html = app(WikiService::class)
                 ->dynamic()
                 ->get(Str::wikiLink($armor->path))
-                ->getBody()
-                ->__toString();
+                ->toHtml();
             $data = app(DomCrawlerService::class)
                 ->armor()
                 ->spellList($html);

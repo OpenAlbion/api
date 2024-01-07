@@ -32,6 +32,7 @@ class GetWeaponSpell extends Command
     public function handle()
     {
         $weapons = Weapon::query()
+            ->where('subcategory_id', 69)
             ->where('path', '!=', null)
             ->get();
 
@@ -39,8 +40,7 @@ class GetWeaponSpell extends Command
             $html = app(WikiService::class)
                 ->dynamic()
                 ->get(Str::wikiLink($weapon->path))
-                ->getBody()
-                ->__toString();
+                ->toHtml();
             $data = app(DomCrawlerService::class)
                 ->weapon()
                 ->spellList($html);

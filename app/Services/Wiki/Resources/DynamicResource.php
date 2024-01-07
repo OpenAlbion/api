@@ -2,8 +2,8 @@
 
 namespace App\Services\Wiki\Resources;
 
+use App\Services\Wiki\Contracts\WikiResponseInterface;
 use App\Services\Wiki\WikiService;
-use Psr\Http\Message\ResponseInterface;
 
 class DynamicResource
 {
@@ -12,7 +12,7 @@ class DynamicResource
     ) {
     }
 
-    public function get(string $path): ResponseInterface
+    public function get(string $path): WikiResponseInterface
     {
         return $this->service->get(
             request: $this->service->buildRequest(),

@@ -120,8 +120,7 @@ class WeaponResource
                         $spellHtml = app(WikiService::class)
                             ->dynamic()
                             ->get(Str::wikiLink($slotContainer->eq($ii)->attr('href')))
-                            ->getBody()
-                            ->__toString();
+                            ->toHtml();
                         $spellDom = $this->service->buildCrawler($spellHtml);
                         $attributes = [];
                         $attributeTable = $spellDom->filter('#mw-content-text > div > table:nth-child(4) > tbody > tr');

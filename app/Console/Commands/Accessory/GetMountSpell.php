@@ -44,8 +44,7 @@ class GetMountSpell extends Command
             $html = app(WikiService::class)
                 ->dynamic()
                 ->get(Str::wikiLink($accessory->path))
-                ->getBody()
-                ->__toString();
+                ->toHtml();
             $data = app(DomCrawlerService::class)
                 ->accessory()
                 ->mountSpellList($html);

@@ -36,8 +36,7 @@ class UpdateSpellDescription extends Command
             $html = app(WikiService::class)
                 ->dynamic()
                 ->get(Str::wikiLink($spell->ref))
-                ->getBody()
-                ->__toString();
+                ->toHtml();
 
             $data = app(DomCrawlerService::class)
                 ->spell()

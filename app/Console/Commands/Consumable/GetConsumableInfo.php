@@ -37,8 +37,7 @@ class GetConsumableInfo extends Command
             $html = app(WikiService::class)
                 ->dynamic()
                 ->get(Str::wikiLink($consumable->path))
-                ->getBody()
-                ->__toString();
+                ->toHtml();
             $info = app(DomCrawlerService::class)
                 ->consumable()
                 ->info($html);

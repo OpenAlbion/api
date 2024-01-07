@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Services\Concerns;
+namespace App\Services\DomCrawler\Concerns;
 
 use Symfony\Component\DomCrawler\Crawler;
 
-trait BuildCrawler
+trait CanBuildCrawler
 {
     public function buildCrawler(string $html): Crawler
     {

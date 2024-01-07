@@ -5,7 +5,6 @@ namespace App\Providers;
 use App\Search\Items;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
-use Algolia\ScoutExtended\Searchable\Aggregator;
 
 class AppServiceProvider extends ServiceProvider
 {

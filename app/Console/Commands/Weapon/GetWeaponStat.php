@@ -32,6 +32,7 @@ class GetWeaponStat extends Command
     {
         $weapons = Weapon::query()
             ->where('path', '!=', null)
+            ->where('subcategory_id', 69)
             ->whereNotIn('path', [
                 '/wiki/Journeyman\'s_Nature_Staff', // skip error page
             ])
@@ -41,11 +42,11 @@ class GetWeaponStat extends Command
             $html = app(WikiService::class)
                 ->dynamic()
                 ->get(Str::wikiLink($weapon->path))
-                ->getBody()
-                ->__toString();
+                ->toHtml();
             $data = app(DomCrawlerService::class)
                 ->weapon()
                 ->statList($html);
+
             foreach ($data as $item) {
                 $quality = data_get($item, 'Item Quality');
                 $tier = data_get($item, 'Tier');

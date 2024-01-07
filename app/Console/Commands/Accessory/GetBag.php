@@ -32,8 +32,7 @@ class GetBag extends Command
         $html = app(WikiService::class)
             ->accessory()
             ->bagList()
-            ->getBody()
-            ->__toString();
+            ->toHtml();
 
         $data = app(DomCrawlerService::class)
             ->accessory()

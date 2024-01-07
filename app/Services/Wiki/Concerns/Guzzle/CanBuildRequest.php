@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Services\Concerns;
+namespace App\Services\Wiki\Concerns\Guzzle;
 
 use GuzzleHttp\Client;
 
-trait BuildRequest
+trait CanBuildRequest
 {
     public function buildRequest(): Client
     {

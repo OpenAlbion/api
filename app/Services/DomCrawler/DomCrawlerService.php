@@ -2,7 +2,7 @@
 
 namespace App\Services\DomCrawler;
 
-use App\Services\Concerns\BuildCrawler;
+use App\Services\DomCrawler\Concerns\CanBuildCrawler;
 use App\Services\DomCrawler\Resources\AccessoryResource;
 use App\Services\DomCrawler\Resources\ArmorResource;
 use App\Services\DomCrawler\Resources\ConsumableResource;
@@ -11,7 +11,7 @@ use App\Services\DomCrawler\Resources\WeaponResource;
 
 class DomCrawlerService
 {
-    use BuildCrawler;
+    use CanBuildCrawler;
 
     public function weapon(): WeaponResource
     {

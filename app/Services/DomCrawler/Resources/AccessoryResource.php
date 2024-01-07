@@ -66,8 +66,7 @@ class AccessoryResource
             $spellHtml = app(WikiService::class)
                 ->dynamic()
                 ->get(Str::wikiLink($spell->filter('a')->attr('href')))
-                ->getBody()
-                ->__toString();
+                ->toHtml();
             $spellDom = $this->service->buildCrawler($spellHtml);
             $attributes = [];
             $attributeTable = $spellDom->filter('#mw-content-text > div > table > tbody > tr');
@@ -113,8 +112,7 @@ class AccessoryResource
                             $spellHtml = app(WikiService::class)
                                 ->dynamic()
                                 ->get(Str::wikiLink($abilities->eq($i)->attr('href')))
-                                ->getBody()
-                                ->__toString();
+                                ->toHtml();
                             $spellDom = $this->service->buildCrawler($spellHtml);
                             $attributes = [];
                             $attributeTable = $spellDom->filter('#mw-content-text > div > table > tbody > tr');

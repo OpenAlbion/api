@@ -41,8 +41,7 @@ class GetArmor extends Command
             $html = app(WikiService::class)
                 ->dynamic()
                 ->get(Str::wikiLink($subcategory->path))
-                ->getBody()
-                ->__toString();
+                ->toHtml();
 
             $data = app(DomCrawlerService::class)
                 ->armor()

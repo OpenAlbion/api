@@ -47,8 +47,7 @@ class GetConsumableStat extends Command
             $html = app(WikiService::class)
                 ->dynamic()
                 ->get(Str::wikiLink($consumable->path))
-                ->getBody()
-                ->__toString();
+                ->toHtml();
             $data = app(DomCrawlerService::class)
                 ->consumable()
                 ->foodStatList($html);
@@ -88,8 +87,7 @@ class GetConsumableStat extends Command
             $html = app(WikiService::class)
                 ->dynamic()
                 ->get(Str::wikiLink($consumable->path))
-                ->getBody()
-                ->__toString();
+                ->toHtml();
             $data = app(DomCrawlerService::class)
                 ->consumable()
                 ->potionStatList($html);

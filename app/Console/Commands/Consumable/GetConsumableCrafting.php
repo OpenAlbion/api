@@ -51,8 +51,7 @@ class GetConsumableCrafting extends Command
             $html = app(WikiService::class)
                 ->dynamic()
                 ->get(Str::wikiLink($consumable->path))
-                ->getBody()
-                ->__toString();
+                ->toHtml();
             $data = app(DomCrawlerService::class)
                 ->consumable()
                 ->foodCraftingList($html);
@@ -104,8 +103,7 @@ class GetConsumableCrafting extends Command
             $html = app(WikiService::class)
                 ->dynamic()
                 ->get(Str::wikiLink($consumable->path))
-                ->getBody()
-                ->__toString();
+                ->toHtml();
             $data = app(DomCrawlerService::class)
                 ->consumable()
                 ->potionCraftingList($html);

@@ -34,8 +34,7 @@ class GetMount extends Command
         $html = app(WikiService::class)
             ->accessory()
             ->mountList()
-            ->getBody()
-            ->__toString();
+            ->toHtml();
 
         $data = app(DomCrawlerService::class)
             ->accessory()

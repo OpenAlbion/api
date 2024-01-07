@@ -40,8 +40,7 @@ class CreateMissingOffHandItem extends Command
         //     $html = app(WikiService::class)
         //         ->dynamic()
         //         ->get(Str::wikiLink($item))
-        //         ->getBody()
-        //         ->__toString();
+        //         ->toHtml();
 
         //     $data = app(DomCrawlerService::class)
         //         ->weapon()
@@ -61,12 +60,11 @@ class CreateMissingOffHandItem extends Command
             '/wiki/Adept%27s_Taproot',
             '/wiki/Adept%27s_Celestial_Censer',
         ];
-        foreach($data as $item) {
+        foreach ($data as $item) {
             $html = app(WikiService::class)
                 ->dynamic()
                 ->get(Str::wikiLink($item))
-                ->getBody()
-                ->__toString();
+                ->toHtml();
 
             $data = app(DomCrawlerService::class)
                 ->weapon()

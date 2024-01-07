@@ -32,8 +32,7 @@ class GetWeaponCategory extends Command
         $html = app(WikiService::class)
             ->weapon()
             ->categoryList()
-            ->getBody()
-            ->__toString();
+            ->toHtml();
 
         $data = app(DomCrawlerService::class)
             ->weapon()
