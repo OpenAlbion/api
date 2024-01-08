@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Exception;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Http\Request;
@@ -30,6 +31,31 @@ class RouteServiceProvider extends ServiceProvider
             return Limit::perMinute(60)->by($apiToken ?: $request->ip());
         });
 
+        Request::macro('generateCacheKey', function (): string {
+            $url = request()->url();
+            $queryParams = request()->query();
+
+            if (request()->query('api_token')) {
+                unset($queryParams['api_token']);
+            }
+
+            ksort($queryParams);
+
+            $queryString = http_build_query($queryParams);
+
+            $fullUrl = "{$url}?{$queryString}";
+
+            return sha1($fullUrl);
+        });
+
+        Request::macro('apiTokenCacheKey', function (): string {
+            $apiToken = request()->header('Authorization') ?: request()->query('api_token');
+            if ($apiToken) {
+                return sha1($apiToken);
+            }
+            throw new Exception('Invalid Api Token!');
+        });
+
         $this->routes(function () {
             Route::middleware('api')
                 ->prefix('api')
@@ -43,6 +69,11 @@ class RouteServiceProvider extends ServiceProvider
                 ->prefix('api/v2')
                 ->name('v2.')
                 ->group(base_path('routes/v2.php'));
+
+            Route::middleware(['api'])
+                ->prefix('api/v3')
+                ->name('v3.')
+                ->group(base_path('routes/v3.php'));
 
             Route::middleware(['api', 'weaponryKey'])
                 ->prefix('api/weaponry')

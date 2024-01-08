@@ -3,8 +3,6 @@
 namespace App\Providers;
 
 use App\Services\Wiki\WikiService;
-use Exception;
-use Illuminate\Http\Request;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 
@@ -92,31 +90,6 @@ class WikiServiceProvider extends ServiceProvider
 
         Str::macro('sanitizeSpellDescription', function (string $str): string {
             return preg_replace('/class="[^"]*"/', '', $str);
-        });
-
-        Request::macro('generateCacheKey', function (): string {
-            $url = request()->url();
-            $queryParams = request()->query();
-
-            if (request()->query('api_token')) {
-                unset($queryParams['api_token']);
-            }
-
-            ksort($queryParams);
-
-            $queryString = http_build_query($queryParams);
-
-            $fullUrl = "{$url}?{$queryString}";
-
-            return sha1($fullUrl);
-        });
-
-        Request::macro('apiTokenCacheKey', function (): string {
-            $apiToken = request()->header('Authorization') ?: request()->query('api_token');
-            if ($apiToken) {
-                return sha1($apiToken);
-            }
-            throw new Exception('Invalid Api Token!');
         });
     }
 }
