@@ -8,10 +8,6 @@ OpenAlbion is a free and open-source platform providing Albion Online data and a
 
 Read the full documentation at [openalbion.com](https://openalbion.com).
 
-## Api Token
-
-Our API offers free and unlimited access to OpenAlbion's data. Create your API token at [api.openalbion.com](https://openalbion.com).
-
 ## Data
 
 Download the MySQL 8 database dump file on the [release page](https://github.com/OpenAlbion/api/releases).
@@ -31,12 +27,6 @@ composer install
 cp .env.example .env
 php artisan key:generate
 php artisan migrate
-```
-
-Generate api token
-
-```bash
-php artisan generate:token
 ```
 
 ## License
