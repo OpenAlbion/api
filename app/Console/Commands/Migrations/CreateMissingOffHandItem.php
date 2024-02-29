@@ -35,6 +35,7 @@ class CreateMissingOffHandItem extends Command
         //     '/wiki/Adept%27s_Leering_Cane',
         //     '/wiki/Adept%27s_Cryptcandle',
         //     '/wiki/Adept%27s_Sacred_Scepter',
+        //     '/wiki/Adept%27s_Mistcaller'
         // ];
         // foreach($data as $item) {
         //     $html = app(WikiService::class)
