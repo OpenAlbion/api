@@ -19,6 +19,7 @@ class AccessoryController extends Controller
         $data = cache()->remember($request->generateCacheKey(), config('settings.cache_seconds'), function () use ($request) {
             return $this->model
                 ->query()
+                ->with(['category', 'subcategory'])
                 ->when($request->input('category_id'), function ($query, $category) {
                     $query->where('category_id', $category);
                 })

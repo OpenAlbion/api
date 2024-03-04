@@ -22,6 +22,8 @@ class WeaponResource extends JsonResource
             'item_power' => $this->item_power,
             'identifier' => $this->identifier,
             'icon' => app(RenderService::class)->renderItem($this->identifier),
+            'category' => CategoryResource::make($this->whenLoaded('category')),
+            'subcategory' => CategoryResource::make($this->whenLoaded('subcategory')),
         ];
     }
 }

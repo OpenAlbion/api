@@ -29,6 +29,11 @@ class Accessory extends Model
         return $this->belongsTo(Category::class);
     }
 
+    public function subcategory(): BelongsTo
+    {
+        return $this->belongsTo(Category::class, 'subcategory_id');
+    }
+
     public function spells(): BelongsToMany
     {
         return $this->belongsToMany(Spell::class, 'accessory_spells');

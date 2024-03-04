@@ -23,6 +23,8 @@ class ConsumableResource extends JsonResource
             'identifier' => $this->identifier,
             'icon' => app(RenderService::class)->renderItem($this->identifier),
             'info' => $this->info,
+            'category' => CategoryResource::make($this->whenLoaded('category')),
+            'subcategory' => CategoryResource::make($this->whenLoaded('subcategory')),
         ];
     }
 }
