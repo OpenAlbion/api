@@ -34,7 +34,7 @@ Route::get('privacy-policy', [WebviewController::class, 'privacyPolicy'])->name(
 Route::get('terms-of-service', [WebviewController::class, 'termsOfService'])->name('termsOfService');
 
 Route::get('/download', function () {
-    return redirect()->away('https://play.google.com/store/apps/details?id=com.openalbion.weaponry&fbclid=IwAR0yP3o-qjj5b64V8T5ZxB51zUR9PKqSn4Vf7PQ1XrwC4PjR-PdkPHrEep4');
+    return redirect()->away('https://play.google.com/store/apps/details?id=com.openalbion.weaponry');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

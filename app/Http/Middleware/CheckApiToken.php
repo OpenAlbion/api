@@ -33,7 +33,7 @@ class CheckApiToken
         }
 
         return response()->json([
-            'message' => 'Invalid Api Token!',
+            'message' => 'Please utilize v3 public API endpoints. Kindly refer to the documentation available at https://www.openalbion.com for more information.',
         ], 401);
     }
 }

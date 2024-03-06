@@ -26,9 +26,7 @@ class RouteServiceProvider extends ServiceProvider
     public function boot(): void
     {
         RateLimiter::for('api', function (Request $request) {
-            $apiToken = $request->header('Authorization') ?: $request->query('api_token');
-
-            return Limit::perMinute(60)->by($apiToken ?: $request->ip());
+            return Limit::perMinute(60)->by($request->ip());
         });
 
         Request::macro('generateCacheKey', function (): string {
