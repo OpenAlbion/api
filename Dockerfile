@@ -8,7 +8,6 @@ RUN install-php-extensions pcntl sockets exif sqlite3
 RUN apk add npm
 
 COPY . /var/www
-COPY .env.production /var/www/.env
 
 WORKDIR /var/www
 
