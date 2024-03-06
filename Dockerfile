@@ -20,4 +20,4 @@ RUN composer install --no-dev && \
 RUN php artisan key:generate && \
     php artisan optimize
 
-ENTRYPOINT ["php", "artisan", "octane:start", "--server=frankenphp", "--port=80", "--host=0.0.0.0", "--admin-port=2019"]
+ENTRYPOINT ["php", "artisan", "octane:start", "--server=frankenphp", "--port=8080", "--host=0.0.0.0", "--admin-port=2019"]
