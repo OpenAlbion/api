@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Laravel\Scout\Searchable;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class Armor extends Model
 {
@@ -42,5 +43,12 @@ class Armor extends Model
     public function armorStats(): HasMany
     {
         return $this->hasMany(ArmorStat::class);
+    }
+
+    protected function tier(): Attribute
+    {
+        return Attribute::make(
+            get: fn (string $value) => number_format($value, 1),
+        );
     }
 }
