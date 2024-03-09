@@ -8,6 +8,7 @@ RUN install-php-extensions pcntl sockets exif sqlite3
 RUN apk add npm
 
 COPY . /var/www
+COPY .env.example /var/www/.env
 
 WORKDIR /var/www
 
@@ -17,6 +18,7 @@ RUN composer install --no-dev && \
     npm install && \
     npm run build
 
-RUN php artisan optimize
+RUN php artisan key:generate && \
+    php artisan optimize
 
 ENTRYPOINT ["php", "artisan", "octane:start", "--server=frankenphp", "--port=8080", "--host=0.0.0.0", "--admin-port=2019"]
