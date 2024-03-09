@@ -48,7 +48,7 @@ class Accessory extends Model
     protected function tier(): Attribute
     {
         return Attribute::make(
-            get: fn (string $value) => number_format($value, 1),
+            get: fn ($value) => $value ? number_format($value, 1) : null,
         );
     }
 }
