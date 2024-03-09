@@ -17,9 +17,7 @@ RUN composer install --optimize-autoloader --no-dev && \
     npm install && \
     npm run build
 
-RUN php artisan config:cache && \
-    php artisan event:cache && \
-    php artisan route:cache && \
+RUN php artisan route:cache && \
     php artisan view:cache
 
 ENTRYPOINT ["php", "artisan", "octane:start", "--server=frankenphp", "--workers=4", "--port=8080", "--host=0.0.0.0", "--admin-port=2019"]
