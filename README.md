@@ -8,10 +8,6 @@ OpenAlbion is a free and open-source platform providing Albion Online data and a
 
 Read the full documentation at [openalbion.com](https://openalbion.com).
 
-## Data
-
-Download the MySQL 8 database dump file on the [release page](https://github.com/OpenAlbion/api/releases).
-
 ## Self-host
 
 Self-hosting our project is easy - simply clone the repository and set it up on your own server.

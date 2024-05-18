@@ -65,5 +65,6 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'apiToken' => \App\Http\Middleware\CheckApiToken::class,
         'weaponryKey' => \App\Http\Middleware\CheckWeaponryKey::class,
+        'logRequest' => \App\Http\Middleware\LogRequest::class,
     ];
 }
