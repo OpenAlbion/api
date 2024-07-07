@@ -1,23 +1,11 @@
-FROM php:8.3-alpine
+FROM serversideup/php:8.3-unit
 
-COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
-COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
+USER root
 
-RUN install-php-extensions pcntl sockets exif sqlite3
+COPY ./docker/liblibsql_php.so /usr/local/liblibsql_php.so
 
-RUN apk add npm
+COPY ./docker/zzz-custom-php.ini /usr/local/etc/php/conf.d/
 
-COPY . /var/www
+USER www-data
 
-WORKDIR /var/www
-
-RUN wget -O /usr/local/bin/frankenphp https://github.com/dunglas/frankenphp/releases/download/v1.1.0/frankenphp-linux-x86_64 && chmod +x /usr/local/bin/frankenphp
-
-RUN composer install --optimize-autoloader --no-dev && \
-    npm install && \
-    npm run build
-
-RUN php artisan route:cache && \
-    php artisan view:cache
-
-ENTRYPOINT ["php", "artisan", "octane:start", "--server=frankenphp", "--workers=4", "--port=8080", "--host=0.0.0.0", "--admin-port=2019"]
+COPY --chown=www-data:www-data . /var/www/html

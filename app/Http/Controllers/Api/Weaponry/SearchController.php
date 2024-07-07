@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Weaponry\SearchResource;
 use App\Models\Accessory;
 use App\Models\Armor;
-use App\Models\Consumable;
 use App\Models\Weapon;
 use App\Search\Items;
 use Illuminate\Http\Request;

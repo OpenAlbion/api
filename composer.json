@@ -12,18 +12,15 @@
         "algolia/scout-extended": "^3.0",
         "guzzlehttp/guzzle": "^7.5",
         "laravel/framework": "^11.0",
-        "laravel/octane": "^2.3",
         "laravel/sanctum": "^4.0",
         "laravel/socialite": "^5.6",
         "laravel/tinker": "^2.8",
         "predis/predis": "^2.1",
-        "richan-fongdasen/turso-laravel": "^0.7.0",
         "spatie/browsershot": "^4.0",
         "spatie/laravel-slack-alerts": "^1.2",
-        "spiral/roadrunner-cli": "^2.6.0",
-        "spiral/roadrunner-http": "^3.3.0",
         "symfony/css-selector": "^6.2",
-        "symfony/dom-crawler": "^6.2"
+        "symfony/dom-crawler": "^6.2",
+        "tursodatabase/turso-driver-laravel": "^1.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
