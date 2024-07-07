@@ -9,3 +9,5 @@ COPY ./docker/zzz-custom-php.ini /usr/local/etc/php/conf.d/
 USER www-data
 
 COPY --chown=www-data:www-data . /var/www/html
+
+RUN composer install --optimize-autoloader --no-dev
