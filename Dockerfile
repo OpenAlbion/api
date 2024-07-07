@@ -11,3 +11,5 @@ USER www-data
 COPY --chown=www-data:www-data . /var/www/html
 
 RUN composer install --optimize-autoloader --no-dev
+
+RUN npn run build
