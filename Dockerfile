@@ -13,9 +13,7 @@ WORKDIR /var/www
 
 RUN wget -O /usr/local/bin/frankenphp https://github.com/dunglas/frankenphp/releases/download/v1.1.0/frankenphp-linux-x86_64 && chmod +x /usr/local/bin/frankenphp
 
-RUN composer install --optimize-autoloader --no-dev && \
-    npm install && \
-    npm run build
+RUN composer install --optimize-autoloader --no-dev
 
 RUN php artisan route:cache && \
     php artisan view:cache
