@@ -18,4 +18,8 @@ RUN composer install --optimize-autoloader --no-dev
 RUN php artisan route:cache && \
     php artisan view:cache
 
+RUN npm install pnpm -g && \
+    pnpm install && \
+    pnpm build
+
 ENTRYPOINT ["php", "artisan", "octane:start", "--server=frankenphp", "--workers=4", "--port=8080", "--host=0.0.0.0", "--admin-port=2019"]
