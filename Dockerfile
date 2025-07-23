@@ -22,4 +22,6 @@ RUN npm install pnpm -g && \
     pnpm install && \
     pnpm build
 
+RUN php artisan migrate --force
+
 ENTRYPOINT ["php", "artisan", "octane:start", "--server=frankenphp", "--workers=4", "--port=8080", "--host=0.0.0.0", "--admin-port=2019"]
