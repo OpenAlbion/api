@@ -3,13 +3,10 @@
 pub mod handlers;
 pub mod weaponry;
 
-use std::net::SocketAddr;
 use std::sync::Arc;
-use std::time::{SystemTime, UNIX_EPOCH};
 
-use axum::extract::{ConnectInfo, Query, Request, State};
+use axum::extract::{Query, State};
 use axum::http::{header, HeaderValue, StatusCode};
-use axum::middleware::{self, Next};
 use axum::response::{IntoResponse, Response};
 use axum::routing::{get, post};
 use axum::{Json, Router};
@@ -157,46 +154,51 @@ fn weaponry_routes(version: Version) -> Router<Arc<AppState>> {
         .route("/version-check", get(weaponry::version_check))
 }
 
+/// The `/api` router. On the server an in-process per-IP limiter runs as
+/// middleware; on Workers (no `server` feature) rate limiting is done by the
+/// Workers Rate Limiting binding before the request reaches the router.
 pub fn api_router(state: Arc<AppState>) -> Router {
-    Router::new()
+    let router = Router::new()
         .nest("/v1", version_routes(Version::V1, false))
         .nest("/v2", version_routes(Version::V2, false))
         .nest("/v3", version_routes(Version::V3, false))
         .nest("/weaponry", weaponry_routes(Version::V1))
         .nest("/weaponryV2", weaponry_routes(Version::V2))
-        .fallback(api_fallback)
-        .layer(middleware::from_fn_with_state(state.clone(), rate_limit_mw))
-        .layer(CorsLayer::very_permissive())
-        .with_state(state)
+        .fallback(api_fallback);
+
+    #[cfg(feature = "server")]
+    let router = router.layer(axum::middleware::from_fn_with_state(state.clone(), rate_limit_mw));
+
+    router.layer(CorsLayer::very_permissive()).with_state(state)
 }
 
+/// The 429 response (Laravel's throttle shape).
+pub fn too_many_attempts(retry_after: u64, limit: u64) -> Response {
+    let mut response = Json(MessageDto::new("Too Many Attempts.")).into_response();
+    *response.status_mut() = StatusCode::TOO_MANY_REQUESTS;
+    response
+        .headers_mut()
+        .insert(header::RETRY_AFTER, HeaderValue::from(retry_after));
+    response
+        .headers_mut()
+        .insert("x-ratelimit-limit", HeaderValue::from(limit));
+    response
+}
+
+#[cfg(feature = "server")]
 async fn rate_limit_mw(
     State(state): State<Arc<AppState>>,
-    req: Request,
-    next: Next,
+    req: axum::extract::Request,
+    next: axum::middleware::Next,
 ) -> Response {
     let ip = req
         .extensions()
-        .get::<ConnectInfo<SocketAddr>>()
+        .get::<axum::extract::ConnectInfo<std::net::SocketAddr>>()
         .map(|ci| ci.0.ip().to_string())
         .unwrap_or_else(|| "unknown".to_string());
 
-    let now_unix = SystemTime::now()
-        .duration_since(UNIX_EPOCH)
-        .map(|d| d.as_secs() as i64)
-        .unwrap_or(0);
-
-    if let Some(retry_after) = state.rate_limit.hit(&ip, now_unix) {
-        let mut response = Json(MessageDto::new("Too Many Attempts.")).into_response();
-        *response.status_mut() = StatusCode::TOO_MANY_REQUESTS;
-        response
-            .headers_mut()
-            .insert(header::RETRY_AFTER, HeaderValue::from(retry_after));
-        response.headers_mut().insert(
-            "x-ratelimit-limit",
-            HeaderValue::from(state.rate_limit.limit),
-        );
-        return response;
+    if let Some(retry_after) = state.rate_limit.hit(&ip, crate::platform::now_unix()) {
+        return too_many_attempts(retry_after, state.rate_limit.limit);
     }
 
     next.run(req).await

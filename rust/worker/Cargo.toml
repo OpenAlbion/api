@@ -1,0 +1,23 @@
+[package]
+name = "openalbion-worker"
+version = "3.0.0"
+edition = "2021"
+description = "OpenAlbion API on Cloudflare Workers (wasm build of ../)"
+license = "MIT"
+publish = false
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+openalbion-api = { path = "..", default-features = false, features = ["worker"] }
+worker = { version = "0.9", features = ["http", "axum"] }
+axum = { version = "0.8", default-features = false }
+tower = "0.5"
+tower-http = { version = "0.6", default-features = false, features = ["normalize-path"] }
+
+[profile.release]
+lto = true
+strip = false
+codegen-units = 1
+opt-level = "s"

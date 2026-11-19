@@ -4,6 +4,7 @@
 pub mod api;
 pub mod dto;
 pub mod models;
+pub mod platform;
 pub mod render;
 pub mod state;
 pub mod util;

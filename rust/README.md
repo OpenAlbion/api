@@ -115,6 +115,43 @@ docker run -p 8080:8080 openalbion-api
 The data files are baked into the image; mount a volume over `/app/data` to
 use a fresher export.
 
+## Cloudflare Workers
+
+`worker/` runs the same axum router on Cloudflare Workers, compiled to
+WebAssembly with [workers-rs](https://github.com/cloudflare/workers-rs). The
+`data/*.json` tables are embedded in the wasm (~0.8 MB gzipped) and parsed
+once per isolate on the first request.
+
+One-time setup (needs a rustup-managed toolchain; Homebrew's `rust` has no
+wasm target):
+
+```bash
+brew install rustup && export PATH="/opt/homebrew/opt/rustup/bin:$HOME/.cargo/bin:$PATH"
+cargo install worker-build
+```
+
+Run locally / deploy:
+
+```bash
+cd worker
+npx wrangler dev        # http://localhost:8787
+npx wrangler login      # once
+npx wrangler deploy
+```
+
+Optional Slack forwarding of bug reports: `npx wrangler secret put SLACK_WEBHOOK_URL`.
+
+Differences from the native server on Workers:
+
+- Rate limiting (60/min per IP on `/api/*`) uses the Workers Rate Limiting
+  binding (`API_RATE_LIMITER` in `wrangler.toml`), keyed by `CF-Connecting-IP`.
+- Bug reports are written to the Workers log (`wrangler tail` / dashboard)
+  instead of `bug-reports.jsonl`; the Slack webhook is awaited inline.
+- The AOD price cache is per isolate.
+- Cold start parses the dataset (~100+ ms CPU). That exceeds the Workers Free
+  plan's 10 ms CPU limit on the first request per isolate, so use the Paid plan
+  for production.
+
 ## Differences from the Laravel app (all deliberate)
 
 1. v1/v2 token check removed — all public API versions are now public.

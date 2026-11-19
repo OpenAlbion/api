@@ -6,9 +6,8 @@
 //! `whenLoaded` / `when($request->weaponry, ...)` fields.
 
 use serde::Serialize;
-use serde_json::Value;
 
-use crate::models::{Category, Consumable, CraftingRow, Item, Spell, StatRow};
+use crate::models::{Category, Consumable, CraftingRow, Item, JsonText, Spell, StatRow};
 use crate::render;
 use crate::util::{plural_type, slot_name, strip_tags, tier_string};
 
@@ -179,7 +178,7 @@ pub struct SpellDto {
     pub slot: String,
     pub preview: Option<String>,
     pub icon: String,
-    pub attributes: Value,
+    pub attributes: JsonText,
     pub description: Option<String>,
     pub description_html: Option<String>,
 }
@@ -218,7 +217,7 @@ macro_rules! stat_row_dto {
             pub enchantment: i64,
             #[serde(rename = $key)]
             pub item: Option<ItemDto>,
-            pub stats: Value,
+            pub stats: JsonText,
         }
 
         impl $name {
@@ -245,7 +244,7 @@ pub struct ConsumableStatRowDto {
     pub quality: String,
     pub enchantment: i64,
     pub consumable: Option<ConsumableDto>,
-    pub stats: Value,
+    pub stats: JsonText,
 }
 
 impl ConsumableStatRowDto {
@@ -286,7 +285,7 @@ pub struct CraftingRowDto {
     pub per_craft: Option<i64>,
     pub enchantment: i64,
     pub consumable: Option<ConsumableDto>,
-    pub requirements: Value,
+    pub requirements: JsonText,
 }
 
 impl CraftingRowDto {

@@ -1,0 +1,25 @@
+name = "openalbion"
+main = "build/index.js"
+compatibility_date = "2026-11-01"
+
+# Requires the wasm32 target and worker-build on PATH:
+#   rustup target add wasm32-unknown-unknown
+#   cargo install worker-build
+[build]
+command = "worker-build --release"
+watch_dir = ["src", "../src", "../web", "../data"]
+
+[observability]
+enabled = true
+
+# 60 requests / minute per client IP on /api/* (mirrors the server's limiter).
+[[ratelimits]]
+name = "API_RATE_LIMITER"
+namespace_id = "1001"
+simple = { limit = 60, period = 60 }
+
+[vars]
+AOD_CACHE_SECONDS = "180"
+
+# Optional: forward bug reports to Slack
+#   npx wrangler secret put SLACK_WEBHOOK_URL

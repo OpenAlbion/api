@@ -1,11 +1,11 @@
 //! Application state: the whole dataset loaded from JSON files into memory,
 //! plus the small runtime pieces (rate limiter, AOD proxy cache, config).
 
+use std::borrow::Cow;
 use std::collections::{HashMap, HashSet};
-use std::fs::File;
 use std::path::{Path, PathBuf};
 use std::sync::Mutex;
-use std::time::{Duration, Instant};
+use std::time::Duration;
 
 use dashmap::DashMap;
 use serde_json::Value;
@@ -61,7 +61,8 @@ pub struct AodCacheKey {
 #[derive(Debug)]
 pub struct AodCache {
     ttl: Duration,
-    entries: Mutex<HashMap<AodCacheKey, (Instant, Value)>>,
+    /// key -> (inserted at, unix millis; value)
+    entries: Mutex<HashMap<AodCacheKey, (u64, Value)>>,
 }
 
 impl AodCache {
@@ -69,10 +70,15 @@ impl AodCache {
         Self { ttl, entries: Mutex::new(HashMap::new()) }
     }
 
+    fn fresh(&self, at: u64, now: u64) -> bool {
+        now.saturating_sub(at) < self.ttl.as_millis() as u64
+    }
+
     pub fn get(&self, key: &AodCacheKey) -> Option<Value> {
+        let now = crate::platform::now_millis();
         let mut guard = self.entries.lock().expect("aod cache poisoned");
         match guard.get(key) {
-            Some((at, value)) if at.elapsed() < self.ttl => Some(value.clone()),
+            Some((at, value)) if self.fresh(*at, now) => Some(value.clone()),
             Some(_) => {
                 guard.remove(key);
                 None
@@ -82,11 +88,12 @@ impl AodCache {
     }
 
     pub fn put(&self, key: AodCacheKey, value: Value) {
+        let now = crate::platform::now_millis();
         let mut guard = self.entries.lock().expect("aod cache poisoned");
         // Opportunistic sweep of expired entries so the map cannot grow
         // without bound.
-        guard.retain(|_, (at, _)| at.elapsed() < self.ttl);
-        guard.insert(key, (Instant::now(), value));
+        guard.retain(|_, (at, _)| now.saturating_sub(*at) < self.ttl.as_millis() as u64);
+        guard.insert(key, (now, value));
     }
 }
 
@@ -161,15 +168,20 @@ pub struct AppState {
 
     pub slack_webhook_url: Option<String>,
     pub aod_url_template: String,
-    pub bug_reports_path: PathBuf,
+    /// Where bug reports are appended (server builds with a data dir only).
+    pub bug_reports_path: Option<PathBuf>,
     pub rate_limit: RateLimitState,
     pub aod_cache: AodCache,
+    #[cfg(feature = "server")]
     pub http_client: reqwest::Client,
 }
 
-fn load_vec<T: for<'de> serde::Deserialize<'de>>(data_dir: &Path, table: &str) -> std::io::Result<Vec<T>> {
+/// Returns the raw JSON bytes of one data table (e.g. `"weapons"`).
+pub type TableLoader<'a> = dyn Fn(&str) -> std::io::Result<Cow<'static, [u8]>> + 'a;
+
+fn read_table_file(data_dir: &Path, table: &str) -> std::io::Result<Cow<'static, [u8]>> {
     let path = data_dir.join(format!("{table}.json"));
-    let file = File::open(&path).map_err(|e| {
+    std::fs::read(&path).map(Cow::Owned).map_err(|e| {
         std::io::Error::new(
             e.kind(),
             format!(
@@ -177,8 +189,12 @@ fn load_vec<T: for<'de> serde::Deserialize<'de>>(data_dir: &Path, table: &str) -
                 path = path.display()
             ),
         )
-    })?;
-    serde_json::from_reader(file)
+    })
+}
+
+fn load_vec<T: for<'de> serde::Deserialize<'de>>(loader: &TableLoader<'_>, table: &str) -> std::io::Result<Vec<T>> {
+    let bytes = loader(table)?;
+    serde_json::from_slice(&bytes)
         .map_err(|e| std::io::Error::other(format!("invalid JSON in {table}.json: {e}")))
 }
 
@@ -197,16 +213,24 @@ fn index_by_id<T>(rows: &[T], id: impl Fn(&T) -> i64) -> HashMap<i64, usize> {
 impl AppState {
     /// Loads every data file from `data_dir` and builds the lookup indices.
     pub fn load(data_dir: &Path, config: AppConfig) -> std::io::Result<Self> {
-        let categories: Vec<Category> = load_vec(data_dir, "categories")?;
-        let weapons: Vec<Item> = load_vec(data_dir, "weapons")?;
-        let armors: Vec<Item> = load_vec(data_dir, "armors")?;
-        let accessories: Vec<Item> = load_vec(data_dir, "accessories")?;
-        let consumables: Vec<Consumable> = load_vec(data_dir, "consumables")?;
-        let spells: Vec<Spell> = load_vec(data_dir, "spells")?;
+        let mut state = Self::from_loader(&|table| read_table_file(data_dir, table), config)?;
+        state.bug_reports_path = Some(data_dir.join("bug-reports.jsonl"));
+        Ok(state)
+    }
 
-        let weapon_spells: Vec<SpellPivot> = load_vec(data_dir, "weapon_spells")?;
-        let armor_spells: Vec<SpellPivot> = load_vec(data_dir, "armor_spells")?;
-        let accessory_spells: Vec<SpellPivot> = load_vec(data_dir, "accessory_spells")?;
+    /// Builds the state from tables supplied by `loader` (files on the
+    /// server, bytes embedded in the binary on Workers).
+    pub fn from_loader(loader: &TableLoader<'_>, config: AppConfig) -> std::io::Result<Self> {
+        let categories: Vec<Category> = load_vec(loader, "categories")?;
+        let weapons: Vec<Item> = load_vec(loader, "weapons")?;
+        let armors: Vec<Item> = load_vec(loader, "armors")?;
+        let accessories: Vec<Item> = load_vec(loader, "accessories")?;
+        let consumables: Vec<Consumable> = load_vec(loader, "consumables")?;
+        let spells: Vec<Spell> = load_vec(loader, "spells")?;
+
+        let weapon_spells: Vec<SpellPivot> = load_vec(loader, "weapon_spells")?;
+        let armor_spells: Vec<SpellPivot> = load_vec(loader, "armor_spells")?;
+        let accessory_spells: Vec<SpellPivot> = load_vec(loader, "accessory_spells")?;
         let weapon_spells = group_by_item(weapon_spells, |r| r.item_id)
             .into_iter()
             .map(|(k, rows)| (k, rows.into_iter().map(|r| r.spell_id).collect::<HashSet<_>>()))
@@ -220,16 +244,16 @@ impl AppState {
             .map(|(k, rows)| (k, rows.into_iter().map(|r| r.spell_id).collect::<HashSet<_>>()))
             .collect::<HashMap<_, _>>();
 
-        let weapon_stats: Vec<StatRow> = load_vec(data_dir, "weapon_stats")?;
-        let armor_stats: Vec<StatRow> = load_vec(data_dir, "armor_stats")?;
-        let accessory_stats: Vec<StatRow> = load_vec(data_dir, "accessory_stats")?;
-        let consumable_stats: Vec<StatRow> = load_vec(data_dir, "consumable_stats")?;
+        let weapon_stats: Vec<StatRow> = load_vec(loader, "weapon_stats")?;
+        let armor_stats: Vec<StatRow> = load_vec(loader, "armor_stats")?;
+        let accessory_stats: Vec<StatRow> = load_vec(loader, "accessory_stats")?;
+        let consumable_stats: Vec<StatRow> = load_vec(loader, "consumable_stats")?;
         let weapon_stats = group_by_item(weapon_stats, |r| r.item_id);
         let armor_stats = group_by_item(armor_stats, |r| r.item_id);
         let accessory_stats = group_by_item(accessory_stats, |r| r.item_id);
         let consumable_stats = group_by_item(consumable_stats, |r| r.item_id);
 
-        let craftings: Vec<CraftingRow> = load_vec(data_dir, "consumable_craftings")?;
+        let craftings: Vec<CraftingRow> = load_vec(loader, "consumable_craftings")?;
         let consumable_craftings = group_by_item(craftings, |r| r.item_id);
 
         let category_index = index_by_id(&categories, |c| c.id);
@@ -248,6 +272,7 @@ impl AppState {
             "dataset loaded"
         );
 
+        #[cfg(feature = "server")]
         let http_client = reqwest::Client::builder()
             .timeout(Duration::from_secs(3))
             .build()
@@ -275,9 +300,10 @@ impl AppState {
             consumable_craftings,
             slack_webhook_url: config.slack_webhook_url,
             aod_url_template: config.aod_url_template,
-            bug_reports_path: data_dir.join("bug-reports.jsonl"),
+            bug_reports_path: None,
             rate_limit: RateLimitState::new(config.rate_limit_per_minute),
             aod_cache: AodCache::new(config.aod_cache_ttl),
+            #[cfg(feature = "server")]
             http_client,
         })
     }

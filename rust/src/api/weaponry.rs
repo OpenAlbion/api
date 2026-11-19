@@ -178,38 +178,20 @@ pub async fn bug_report(
     match validate_bug_report(&body) {
         BugReportBody::Invalid(dto) => (StatusCode::UNPROCESSABLE_ENTITY, Json(dto)).into_response(),
         BugReportBody::Valid { category, description, debug } => {
-            // Persist to the JSONL log (our file-based replacement for the
-            // database, so self-hosted instances keep their bug reports).
+            // Persist (JSONL file on the server, Workers log on Cloudflare).
             let record = json!({
-                "timestamp": std::time::SystemTime::now()
-                    .duration_since(std::time::UNIX_EPOCH)
-                    .map(|d| d.as_secs())
-                    .unwrap_or_default(),
+                "timestamp": crate::platform::now_unix(),
                 "category": category,
                 "description": description,
                 "debug": debug,
             });
-            let line = format!("{record}\n");
-            if let Err(e) = std::fs::OpenOptions::new()
-                .create(true)
-                .append(true)
-                .open(&state.bug_reports_path)
-                .and_then(|mut f| std::io::Write::write_all(&mut f, line.as_bytes()))
-            {
-                tracing::error!(path = %state.bug_reports_path.display(), error = %e, "failed to append bug report");
-            }
+            crate::platform::store_bug_report(&state, &record);
 
             // Forward to Slack like `Spatie\SlackAlerts` when configured.
             if let Some(webhook) = state.slack_webhook_url.clone() {
                 let debug_pretty = serde_json::to_string_pretty(&debug).unwrap_or_else(|_| "{}".into());
                 let message = format!("*{category}*\n{description}\n```{debug_pretty}```");
-                let client = state.http_client.clone();
-                tokio::spawn(async move {
-                    let payload = json!({ "text": message });
-                    if let Err(e) = client.post(&webhook).json(&payload).send().await {
-                        tracing::warn!(error = %e, "failed to forward bug report to slack");
-                    }
-                });
+                crate::platform::post_json(&state, webhook, json!({ "text": message })).await;
             }
 
             Json(MessageDto::new("success")).into_response()
@@ -307,15 +289,10 @@ pub async fn aod_price(
         .replace("{region}", &region)
         .replace("{item}", &item_id);
 
-    let result = state.http_client.get(&url).query(&pairs).send().await;
-
-    let value = match result {
-        Ok(resp) => match resp.text().await {
-            // Laravel does `Http::get(...)->json()`: an unparseable body
-            // becomes `null`, and the upstream status is *not* propagated.
-            Ok(text) => serde_json::from_str::<Value>(&text).unwrap_or(Value::Null),
-            Err(_) => Value::Null,
-        },
+    let value = match crate::platform::http_get_text(&state, &url, &pairs).await {
+        // Laravel does `Http::get(...)->json()`: an unparseable body
+        // becomes `null`, and the upstream status is *not* propagated.
+        Ok(text) => serde_json::from_str::<Value>(&text).unwrap_or(Value::Null),
         // Laravel throws (500 HTML) on transport errors; 502 JSON is the
         // documented deviation.
         Err(e) => {
