@@ -17,6 +17,9 @@ server = [
 ]
 # Cloudflare Workers (wasm32): see ./worker. Uses the Workers fetch API.
 worker = ["dep:worker"]
+# ao-bin-dumps importer (`openalbion-import`): downloads the public game-data
+# dump from GitHub and overwrites the item tables. Never part of Workers.
+import = ["server", "dep:clap"]
 
 [dependencies]
 axum = { version = "0.8", default-features = false, features = ["json", "query", "matched-path", "original-uri"] }
@@ -32,11 +35,17 @@ reqwest = { version = "0.12", default-features = false, features = ["rustls-tls"
 tracing-subscriber = { version = "0.3", features = ["env-filter"], optional = true }
 
 worker = { version = "0.9", features = ["http", "axum"], optional = true }
+clap = { version = "4", features = ["derive", "env"], optional = true }
 
 [[bin]]
 name = "openalbion-api"
 path = "src/main.rs"
 required-features = ["server"]
+
+[[bin]]
+name = "openalbion-import"
+path = "src/bin/openalbion-import.rs"
+required-features = ["import"]
 
 [profile.release]
 lto = true

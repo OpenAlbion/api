@@ -127,13 +127,18 @@ fn fixture_state(dir: &std::path::Path) -> Arc<AppState> {
 }
 
 fn temp_data_dir() -> (std::path::PathBuf, impl Drop) {
+    // A monotonic counter keeps names unique even when several tests start in
+    // the same clock tick (coarse timer resolution on macOS).
+    use std::sync::atomic::{AtomicU64, Ordering};
+    static COUNTER: AtomicU64 = AtomicU64::new(0);
     let dir = std::env::temp_dir().join(format!(
-        "openalbion-test-{}-{}",
+        "openalbion-test-{}-{}-{}",
         std::process::id(),
         std::time::SystemTime::now()
             .duration_since(std::time::UNIX_EPOCH)
             .unwrap()
-            .as_nanos()
+            .as_nanos(),
+        COUNTER.fetch_add(1, Ordering::Relaxed)
     ));
     std::fs::create_dir_all(&dir).unwrap();
     struct Guard(std::path::PathBuf);

@@ -6,3 +6,5 @@ cargo-home/
 data/bug-reports.jsonl
 .env
 .npm-cache/
+data/backups/
+data/.cache/

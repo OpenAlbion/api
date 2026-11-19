@@ -62,8 +62,55 @@ To update the dataset: refresh `database/database.sqlite` from the Laravel
 side, then re-run the export script and restart the app.
 
 The Albion Online Wiki's bot protection is respected: **no crawler or
-Cloudflare bypass ships with this project**. Dataset updates happen
-out-of-band (from a permitted source / manual export), not by scraping.
+Cloudflare bypass ships with this project**. Item data is refreshed from the
+public game-data dump instead (see below).
+
+## Refreshing item data (`openalbion-import`)
+
+[ao-bin-dumps](https://github.com/ao-data/ao-bin-dumps) publishes the game's
+own item definitions (tier, item power, shop categories, crafting recipes,
+enchantment variants, localized names). It is the **authoritative** item
+source: the importer overwrites the item tables with it.
+
+```bash
+cargo run --release --features import --bin openalbion-import --   --dry-run                # inspect the diff first (writes nothing)
+cargo run --release --features import --bin openalbion-import      # apply
+```
+
+What happens on every run:
+
+1. the current dataset (all 14 tables) is copied to
+   `data/backups/<UTC timestamp>/` — that is the version history, so every
+   overwrite is reversible;
+2. `weapons`, `armors`, `accessories`, `consumables` are overwritten from the
+   dump: `identifier`, `name`, `tier`, `item_power` and the
+   category/subcategory mapping come from the game data;
+3. `consumable_craftings` is regenerated (base recipe + one per enchantment,
+   with `per_craft` from `@amountcrafted` and requirements resolved to
+   identifiers/icons);
+4. a report is printed and written to `data/backups/<timestamp>/report.json`:
+   added rows, renames, corrected identifiers, item-power changes, items the
+   dump lacks (kept), unmapped subcategories and skipped cosmetics.
+
+Preserved on overwrite: the row `id` of every matched item (so
+`*_stats` and item↔spell pivots stay attached), the wiki `path`, the
+consumable `info` text, and `categories.json` itself.
+
+**Not provided by the dump** (documented limitation, reported per run):
+per-quality stats, spells/slot links, and wiki paths for new items. New items
+therefore arrive with `path: null` and no stats/spells until a permitted
+source for those exists; items whose wiki subcategory is unknown are written
+with `subcategory_id: null` rather than inventing a category.
+
+Flags: `--dry-run`, `--refresh` (re-download the dump), `--from-dir DIR` (use a
+local checkout instead of downloading), `--include-cosmetics` (also import
+founder/vanity/starter-pack items, skipped by default), `--only items|crafting`,
+`status` (compare the dataset with the dump without writing).
+Downloads are cached in `data/.cache/ao-bin-dumps/` (both gitignored).
+
+Latest import (dump of 2026-11-19): weapons 694 → **802**, armors 426 → **548**,
+accessories 174 → **220**, consumables 72 → **104**, crafting rows 238 → **392**;
+7 accessories + 1 consumable are wiki-only entries the dump lacks and were kept.
 
 ## Tests
 

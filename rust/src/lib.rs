@@ -3,6 +3,8 @@
 
 pub mod api;
 pub mod dto;
+#[cfg(feature = "import")]
+pub mod importer;
 pub mod models;
 pub mod platform;
 pub mod render;
