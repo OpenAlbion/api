@@ -11,7 +11,6 @@
     --gray-700: #374151;
     --gray-800: #1f2937;
     --gray-900: #111827;
-    --dot: #cbd5e1;
     --page-bg: var(--gray-100);
     --card-bg: #ffffff;
     --text: var(--gray-900);
@@ -45,9 +44,16 @@ body {
         "Helvetica Neue", Arial, sans-serif;
     color: var(--text);
     background-color: var(--page-bg);
-    background-image: radial-gradient(var(--dot) 1px, transparent 1px);
-    background-size: 22px 22px;
+    /* Laravel Breeze bg-dots-darker / dark:bg-dots-lighter */
+    background-image: radial-gradient(circle at 25px 25px, #cbd5e1 2%, transparent 50%);
+    background-size: 50px 50px;
     -webkit-font-smoothing: antialiased;
+}
+
+@media (prefers-color-scheme: dark) {
+    body {
+        background-image: radial-gradient(circle at 25px 25px, #4b5563 2%, transparent 50%);
+    }
 }
 
 ::selection { background: var(--red); color: #fff; }
@@ -56,12 +62,21 @@ a { color: inherit; text-decoration: none; }
 
 /* Home ------------------------------------------------------------------ */
 
+/* Plain block below `sm` (like the original `relative min-h-screen`), flex
+ * centered only from 640px up (the original `sm:flex sm:justify-center
+ * sm:items-center`). Keeping the wrap a normal block width is what stops
+ * the desktop layout from blowing out: a flex-row wrap shrink-to-fits to
+ * max-content, stretching the cards absurdly wide. */
 .page {
     min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 3rem 1rem;
+}
+
+@media (min-width: 640px) {
+    .page {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 }
 
 .wrap {
@@ -69,6 +84,8 @@ a { color: inherit; text-decoration: none; }
     margin: 0 auto;
     padding: 1.5rem;
 }
+
+@media (min-width: 1024px) { .wrap { padding: 2rem; } }
 
 .logo-row { display: flex; justify-content: center; }
 
@@ -86,7 +103,11 @@ a { color: inherit; text-decoration: none; }
 }
 
 @media (min-width: 768px) {
-    .grid { grid-template-columns: 1fr 1fr; gap: 2rem; }
+    .grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (min-width: 1024px) {
+    .grid { gap: 2rem; }
 }
 
 .card {
@@ -95,9 +116,7 @@ a { color: inherit; text-decoration: none; }
     background: var(--card-bg);
     background-image: var(--card-gradient);
     box-shadow: var(--card-shadow);
-    box-decoration-break: clone;
     border-radius: 8px;
-    box-shadow: var(--card-shadow);
     border: var(--card-ring);
     transition: transform 250ms ease;
 }
@@ -136,12 +155,18 @@ a { color: inherit; text-decoration: none; }
 
 .card-arrow svg { width: 24px; height: 24px; stroke: var(--red); }
 
+/* Centered on mobile; pushed to the right on `sm:` up, matching the
+ * original `sm:justify-between` with its empty left column. */
 .foot {
     margin-top: 4rem;
     display: flex;
     justify-content: center;
     font-size: 0.875rem;
     color: var(--text-muted);
+}
+
+@media (min-width: 640px) {
+    .foot { justify-content: flex-end; align-items: center; }
 }
 
 .foot a { margin-left: 1rem; }
