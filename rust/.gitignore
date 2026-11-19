@@ -6,3 +6,6 @@ cargo-home/
 data/bug-reports.jsonl
 .env
 .npm-cache/
+# fetcher artefacts (backups, Cloudflare cookie, AOD item cache)
+data/backups/
+data/.cache/
