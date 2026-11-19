@@ -1,0 +1,206 @@
+/* OpenAlbion — plain-CSS replica of the previous Tailwind-built pages. */
+
+:root {
+    --red: #ef4444;
+    --red-dark: #dc2626;
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-400: #9ca3af;
+    --gray-500: #6b7280;
+    --gray-600: #4b5563;
+    --gray-700: #374151;
+    --gray-800: #1f2937;
+    --gray-900: #111827;
+    --dot: #cbd5e1;
+    --page-bg: var(--gray-100);
+    --card-bg: #ffffff;
+    --text: var(--gray-900);
+    --text-muted: var(--gray-500);
+    --card-ring: none;
+    --card-gradient: none;
+    --card-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+    --icon-bg: #fef2f2;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --page-bg: var(--gray-900);
+        --card-bg: rgb(31 41 55 / 0.5);
+        --text: #ffffff;
+        --text-muted: var(--gray-400);
+        --card-ring: inset 0 0 0 1px rgb(255 255 255 / 0.05);
+        --card-gradient: linear-gradient(to bottom left, rgb(55 65 81 / 0.5), transparent);
+        --card-shadow: none;
+        --icon-bg: rgb(248 113 113 / 0.2);
+    }
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+    margin: 0;
+    font-family: "Figtree", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+        "Helvetica Neue", Arial, sans-serif;
+    color: var(--text);
+    background-color: var(--page-bg);
+    background-image: radial-gradient(var(--dot) 1px, transparent 1px);
+    background-size: 22px 22px;
+    -webkit-font-smoothing: antialiased;
+}
+
+::selection { background: var(--red); color: #fff; }
+
+a { color: inherit; text-decoration: none; }
+
+/* Home ------------------------------------------------------------------ */
+
+.page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 1rem;
+}
+
+.wrap {
+    max-width: 80rem;
+    margin: 0 auto;
+    padding: 1.5rem;
+}
+
+.logo-row { display: flex; justify-content: center; }
+
+.logo {
+    height: 4rem;
+    width: auto;
+    border-radius: 8px;
+}
+
+.grid {
+    margin-top: 4rem;
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+    .grid { grid-template-columns: 1fr 1fr; gap: 2rem; }
+}
+
+.card {
+    display: flex;
+    padding: 1.5rem;
+    background: var(--card-bg);
+    background-image: var(--card-gradient);
+    box-shadow: var(--card-shadow);
+    box-decoration-break: clone;
+    border-radius: 8px;
+    box-shadow: var(--card-shadow);
+    border: var(--card-ring);
+    transition: transform 250ms ease;
+}
+
+.card:hover { transform: scale(1.01); }
+
+.card:focus-visible { outline: 2px solid var(--red); }
+
+.card-icon {
+    height: 4rem;
+    width: 4rem;
+    border-radius: 9999px;
+    background: var(--icon-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.card-icon svg { width: 28px; height: 28px; stroke: var(--red); }
+
+.card h2 {
+    margin-top: 1.5rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.card p {
+    margin-top: 1rem;
+    font-size: 0.875rem;
+    line-height: 1.625;
+    color: var(--text-muted);
+}
+
+.card-arrow { align-self: center; flex-shrink: 0; margin-left: 1.5rem; }
+
+.card-arrow svg { width: 24px; height: 24px; stroke: var(--red); }
+
+.foot {
+    margin-top: 4rem;
+    display: flex;
+    justify-content: center;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+}
+
+.foot a { margin-left: 1rem; }
+.foot a:hover { text-decoration: underline; }
+
+/* Legal ------------------------------------------------------------------ */
+
+.legal-page {
+    min-height: 100vh;
+    background: var(--gray-50);
+    color: #334155;
+    padding: 2rem 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+}
+
+@media (prefers-color-scheme: dark) {
+    .legal-page { background: var(--gray-900); color: #cbd5e1; }
+    .legal-sheet { background: #1f2937; }
+}
+
+.legal-sheet {
+    position: relative;
+    width: 100%;
+    padding: 3rem 1.5rem;
+    background: #ffffff;
+    margin: 0 auto;
+    max-width: 48rem;
+}
+
+@media (min-width: 768px) { .legal-sheet { max-width: 42rem; } }
+@media (min-width: 1024px) { .legal-sheet { max-width: 56rem; padding: 4rem; } }
+
+.legal-sheet h2 {
+    margin-top: 2rem;
+    font-size: 1.875rem;
+    font-weight: 600;
+    line-height: 1.25;
+    color: #0f172a;
+}
+
+@media (min-width: 1024px) { .legal-sheet h2 { font-size: 2.25rem; } }
+
+.legal-sheet p {
+    margin-top: 1.25rem;
+    font-size: 1rem;
+    line-height: 1.75;
+}
+
+@media (min-width: 1024px) { .legal-sheet p { font-size: 1.125rem; line-height: 1.778; } }
+
+.legal-sheet ol {
+    margin-top: 1.25rem;
+    padding-left: 1.5rem;
+    list-style: decimal;
+}
+
+.legal-sheet li { margin-top: 0.75rem; line-height: 1.75; }
+
+.legal-sheet strong { font-weight: 600; }

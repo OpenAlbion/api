@@ -1,0 +1,7 @@
+target/
+# Project-local cargo home (only needed under the DSH sandbox; regular
+# builds use ~/.cargo)
+cargo-home/
+# runtime artifacts
+data/bug-reports.jsonl
+.env
