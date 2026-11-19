@@ -407,10 +407,10 @@ fn toc_html(headings: &[Heading]) -> String {
     }
 
     let mut html = String::from(
-        r#"<aside class="docs-toc" aria-label="On this page">
-        <p class="docs-toc-title">On this page</p>
+        r##"<aside class="docs-toc" aria-label="On this page">
+        <p class="docs-toc-title"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-book"></use></svg><span>On this page</span></p>
         <ul>
-"#,
+"##,
     );
     for heading in items {
         html.push_str(&format!(
