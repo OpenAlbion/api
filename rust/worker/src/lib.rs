@@ -73,10 +73,12 @@ fn build_app(env: &Env) -> App {
         aod_url_template: env_string(env, "AOD_URL_TEMPLATE").unwrap_or(defaults.aod_url_template),
     };
 
-    let state = AppState::from_loader(&embedded_table, config).expect("embedded dataset is valid");
+    let state = Arc::new(
+        AppState::from_loader(&embedded_table, config).expect("embedded dataset is valid"),
+    );
     let router = Router::new()
-        .nest("/api", api::api_router(Arc::new(state)))
-        .merge(web::web_router());
+        .nest("/api", api::api_router(state.clone()))
+        .merge(web::web_router(state));
     NormalizePathLayer::trim_trailing_slash().layer(router)
 }
 

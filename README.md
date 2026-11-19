@@ -8,8 +8,8 @@ The project is now a **Rust API** (no database — the dataset is plain JSON) th
 native binary or on Cloudflare Workers. The original Laravel implementation that produced
 the dataset is kept for reference in [`laravel/`](laravel/README.md).
 
-- Website / docs: <https://openalbion.com>
-- Live API: <https://openalbion.pyaesoneaungrgn.workers.dev>
+- Website / docs: <https://api.openalbion.com> (docs at <https://api.openalbion.com/docs>)
+- Live API: <https://api.openalbion.com>
 - License: MIT
 
 ## Repository layout
@@ -17,9 +17,10 @@ the dataset is kept for reference in [`laravel/`](laravel/README.md).
 ```
 rust/                    The API (Rust + axum), the dataset, and the data importer
   src/                   Handlers, DTOs, state, web pages
+  src/web/               Docs renderer, page layout and docs registry
   src/importer/          ao-bin-dumps importer (feature `import`)
   data/                  JSON dataset the API serves
-  web/                   Home / terms / privacy pages (embedded in the binary)
+  web/                   Embedded site: CSS/JS, page fragments, docs Markdown, favicons
   worker/                Cloudflare Workers build (same router, compiled to wasm)
   scripts/               Data export + Laravel parity checker
 laravel/                 The original Laravel app: DB migrations, models, console
@@ -37,17 +38,21 @@ per minute per IP.
 | `/api/v3` | Current public API: categories, weapons, armors, accessories, consumables, spells, stats, crafting |
 | `/api/v1`, `/api/v2` | Older response shapes, kept for existing clients |
 | `/api/weaponry`, `/api/weaponryV2` | Endpoints used by the Weaponry app (market prices, search, bug report, version check) |
+| `/docs`, `/docs/{page}` | API documentation (merged from the former openalbion.com docs) |
 | `/`, `/terms-of-service`, `/privacy-policy` | Website pages |
 
 Examples:
 
 ```bash
-curl https://openalbion.pyaesoneaungrgn.workers.dev/api/v3/weapons?tier=8
-curl https://openalbion.pyaesoneaungrgn.workers.dev/api/v3/spells/weapon/1
-curl https://openalbion.pyaesoneaungrgn.workers.dev/api/v3/consumable-craftings/consumable/1
+curl https://api.openalbion.com/api/v3/weapons?tier=8
+curl https://api.openalbion.com/api/v3/spells/weapon/1
+curl https://api.openalbion.com/api/v3/consumable-craftings/consumable/1
 ```
 
-Full endpoint documentation: <https://openalbion.com>
+The website at `/` includes a live playground, and the full reference lives at
+<https://api.openalbion.com/docs>. The docs source is Markdown in
+[`rust/web/docs/`](rust/web/docs) — the former `OpenAlbion/docs` site is no longer
+needed.
 
 ## Running locally
 
@@ -55,7 +60,7 @@ Requirements: Rust (stable). The dataset is committed, so no external service is
 
 ```bash
 cd rust
-cargo run --release            # http://0.0.0.0:8080
+cargo run --release --bin openalbion-api   # http://0.0.0.0:8080
 ```
 
 Configuration (environment or `rust/.env`): `HOST`, `PORT`, `DATA_DIR`,
@@ -66,7 +71,7 @@ Tests:
 
 ```bash
 cd rust
-cargo test        # 52 tests: unit + router-level integration
+cargo test        # unit + router-level integration tests
 cargo clippy      # warning-free
 ```
 

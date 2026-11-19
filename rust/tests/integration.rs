@@ -155,8 +155,8 @@ fn temp_data_dir() -> (std::path::PathBuf, impl Drop) {
 /// trailing-slash normalization).
 fn build_app(state: Arc<AppState>) -> tower_http::normalize_path::NormalizePath<Router> {
     let app: Router = Router::new()
-        .nest("/api", api::api_router(state))
-        .merge(web::web_router());
+        .nest("/api", api::api_router(state.clone()))
+        .merge(web::web_router(state));
     tower_http::normalize_path::NormalizePathLayer::trim_trailing_slash().layer(app)
 }
 
@@ -177,6 +177,18 @@ async fn get_raw(app: &mut tower_http::normalize_path::NormalizePath<Router>, ur
         .oneshot(Request::builder().uri(uri).body(Body::empty()).unwrap())
         .await
         .unwrap()
+}
+
+async fn get_text(
+    app: &mut tower_http::normalize_path::NormalizePath<Router>,
+    uri: &str,
+) -> (StatusCode, String) {
+    let response = get_raw(app, uri).await;
+    let status = response.status();
+    let bytes = axum::body::to_bytes(response.into_body(), usize::MAX)
+        .await
+        .unwrap();
+    (status, String::from_utf8(bytes.to_vec()).unwrap())
 }
 
 async fn post_json(
@@ -562,16 +574,47 @@ async fn web_pages_serve() {
     let mut app = build_app(state.clone());
 
     for (path, title) in [
-        ("/", "<title>OpenAlbion</title>"),
-        ("/terms-of-service", "<title>Terms of Service | OpenAlbion</title>"),
-        ("/privacy-policy", "<title>Privacy Policy | OpenAlbion</title>"),
+        (
+            "/",
+            "<title>OpenAlbion — free Albion Online data API</title>",
+        ),
+        ("/docs", "<title>Introduction | OpenAlbion Docs</title>"),
+        (
+            "/terms-of-service",
+            "<title>Terms of Service | OpenAlbion</title>",
+        ),
+        (
+            "/privacy-policy",
+            "<title>Privacy Policy | OpenAlbion</title>",
+        ),
     ] {
-        let response = get_raw(&mut app, path).await;
-        assert_eq!(response.status(), StatusCode::OK);
-        let bytes = axum::body::to_bytes(response.into_body(), usize::MAX).await.unwrap();
-        let html = String::from_utf8(bytes.to_vec()).unwrap();
+        let (status, html) = get_text(&mut app, path).await;
+        assert_eq!(status, StatusCode::OK, "{path}");
         assert!(html.contains(title), "{path} should contain {title}");
+        assert!(!html.contains("<img src=\"http"), "{path} should not hotlink images");
+        assert!(html.contains("src=\"/logo.png\""), "{path} should use the local logo");
+        assert!(!html.contains("weaponryV2"), "{path} must not advertise the app-only V2 endpoint");
+        for forbidden in [
+            "fonts.bunny",
+            "fonts.googleapis",
+            "cloudinary",
+            "gstatic",
+            "algolia",
+        ] {
+            assert!(
+                !html.contains(forbidden),
+                "{path} must not reference {forbidden}"
+            );
+        }
     }
+
+    // The home page is data-driven: fixture counts are injected, no tokens remain.
+    let (_, home) = get_text(&mut app, "/").await;
+    assert!(home.contains("<dt>3</dt>"), "weapon count is injected");
+    assert!(home.contains("<dt>2</dt>"), "recipe count is injected");
+    assert!(!home.contains("{{"), "no template tokens should remain");
+    assert!(home.contains("/docs/weapons"));
+    assert!(home.contains("data-playground"));
 
     // /download redirects to the Play Store with 302
     let response = get_raw(&mut app, "/download").await;
@@ -581,13 +624,125 @@ async fn web_pages_serve() {
         "https://play.google.com/store/apps/details?id=com.openalbion.weaponry"
     );
 
-    // robots + favicon + css
-    let response = get_raw(&mut app, "/robots.txt").await;
-    assert_eq!(response.status(), StatusCode::OK);
-    let response = get_raw(&mut app, "/favicon.ico").await;
-    assert_eq!(response.status(), StatusCode::OK);
-    let response = get_raw(&mut app, "/app.css").await;
-    assert_eq!(response.status(), StatusCode::OK);
+    // robots, favicons, CSS, JS and sitemap
+    for path in [
+        "/robots.txt",
+        "/favicon.ico",
+        "/logo.png",
+        "/app.css",
+        "/site.js",
+        "/sitemap.xml",
+    ] {
+        let response = get_raw(&mut app, path).await;
+        assert_eq!(response.status(), StatusCode::OK, "{path}");
+    }
+
+    let (_, robots) = get_text(&mut app, "/robots.txt").await;
+    assert!(robots.contains("Sitemap: https://api.openalbion.com/sitemap.xml"));
+
+    let (_, sitemap) = get_text(&mut app, "/sitemap.xml").await;
+    assert!(sitemap.contains("<loc>https://api.openalbion.com/docs/weapons</loc>"));
+    assert!(sitemap.contains("<loc>https://api.openalbion.com/terms-of-service</loc>"));
+
+    let (_, css) = get_text(&mut app, "/app.css").await;
+    assert!(!css.contains("@import"));
+    assert!(!css.contains("fonts.bunny"));
+    assert!(!css.contains("http://"));
+    assert!(!css.contains("https://"));
+}
+
+#[tokio::test]
+async fn docs_pages_serve() {
+    let (dir, _guard) = temp_data_dir();
+    let state = fixture_state(&dir);
+    let mut app = build_app(state.clone());
+
+    for doc in openalbion_api::web::docs::DOCS {
+        let path = if doc.slug == "introduction" {
+            "/docs".to_string()
+        } else {
+            format!("/docs/{}", doc.slug)
+        };
+        let (status, html) = get_text(&mut app, &path).await;
+        assert_eq!(status, StatusCode::OK, "{path}");
+        let expected_title =
+            openalbion_api::web::markdown::escape_html(&format!("{} | OpenAlbion Docs", doc.title));
+        assert!(
+            html.contains(&expected_title),
+            "{path} should carry the docs title"
+        );
+        if let Some(endpoint) = doc.endpoint {
+            assert!(html.contains(endpoint), "{path} should show {endpoint}");
+        }
+        assert!(
+            html.contains("docs-sidebar"),
+            "{path} should render the sidebar"
+        );
+        assert!(!html.contains("<img src=\"http"), "{path} should not hotlink images");
+        assert!(html.contains("src=\"/logo.png\""), "{path} should use the local logo");
+        assert!(!html.contains("weaponryV2"), "{path} must not advertise the app-only V2 endpoint");
+    }
+}
+
+#[tokio::test]
+async fn docs_and_legacy_urls_redirect() {
+    let (dir, _guard) = temp_data_dir();
+    let state = fixture_state(&dir);
+    let mut app = build_app(state.clone());
+
+    for (from, to) in openalbion_api::web::docs::LEGACY_REDIRECTS {
+        let response = get_raw(&mut app, from).await;
+        assert_eq!(response.status(), StatusCode::PERMANENT_REDIRECT, "{from}");
+        assert_eq!(response.headers().get(header::LOCATION).unwrap(), *to);
+    }
+
+    for from in ["/docs/index", "/docs/introduction", "/introduction"] {
+        let response = get_raw(&mut app, from).await;
+        assert_eq!(response.status(), StatusCode::PERMANENT_REDIRECT, "{from}");
+        assert_eq!(response.headers().get(header::LOCATION).unwrap(), "/docs");
+    }
+}
+
+#[tokio::test]
+async fn unknown_pages_are_themed_404s() {
+    let (dir, _guard) = temp_data_dir();
+    let state = fixture_state(&dir);
+    let mut app = build_app(state.clone());
+
+    for path in ["/no-such-page", "/docs/no-such-page"] {
+        let (status, html) = get_text(&mut app, path).await;
+        assert_eq!(status, StatusCode::NOT_FOUND, "{path}");
+        assert!(html.contains("This page wandered off."), "{path}");
+        assert!(html.contains("<link rel=\"stylesheet\" href=\"/app.css\">"));
+    }
+
+    // API fallbacks stay JSON.
+    let (status, value) = get(&mut app, "/api/nope").await;
+    assert_eq!(status, StatusCode::NOT_FOUND);
+    assert_eq!(value["message"], "Not Found");
+}
+
+#[tokio::test]
+async fn playground_presets_answer() {
+    let (dir, _guard) = temp_data_dir();
+    let state = fixture_state(&dir);
+    let mut app = build_app(state.clone());
+
+    for path in [
+        "/api/v3/weapons?tier=8",
+        "/api/v3/categories?type=weapon",
+        "/api/v3/spells/weapon/1",
+        "/api/v3/weapon-stats/weapon/1",
+        "/api/v3/consumable-craftings/consumable/1",
+        "/api/v3/armors?tier=4",
+    ] {
+        let (status, value) = get(&mut app, path).await;
+        assert_eq!(status, StatusCode::OK, "{path}");
+        assert!(
+            value.get("data").is_some(),
+            "{path} should return a data key"
+        );
+    }
 }
 
 #[tokio::test]

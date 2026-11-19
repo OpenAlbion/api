@@ -11,7 +11,8 @@ Serves:
 - `/api/weaponry`, `/api/weaponryV2` — the Weaponry mobile-app endpoints,
   each including its full version route set (**fully public** — no
   `X-WEAPONRY-KEY` check)
-- `/`, `/terms-of-service`, `/privacy-policy`, `/download` — the web pages
+- `/`, `/docs` and `/docs/{page}` — the website and the merged API documentation
+- `/terms-of-service`, `/privacy-policy`, `/download`, `/sitemap.xml`, `/robots.txt` — site pages and metadata
 
 ## Quick start
 
@@ -23,12 +24,34 @@ cd rust
 python3 scripts/export_sqlite.py ../database/database.sqlite data
 
 # 2. Run (reads ./data by default)
-cargo run
+cargo run --bin openalbion-api
 # OpenAlbion API listening on http://0.0.0.0:8080
 ```
 
 The dataset (~30k rows, ~10 MB of JSON) is loaded into memory at startup, so
 every request is served from RAM with no per-request I/O.
+
+## Website & documentation
+
+The site is served by the same binary as the API, with every asset embedded at
+compile time:
+
+```
+src/web.rs             Routes/handlers for the home page, docs, legal pages and assets
+src/web/layout.rs      Shared HTML shell, head metadata, header/footer, embedded logo and inline SVG art
+src/web/markdown.rs    Small dependency-free Markdown renderer (headings, lists, tables, code)
+src/web/docs.rs        Docs registry, sidebar, TOC, prev/next, sitemap and legacy redirects
+web/docs/*.md          Documentation source (edit these, then rebuild)
+web/pages/*.html       Body fragments for the home, legal and 404 pages
+web/app.css            The kawaii-retro theme (periwinkle paper, red accents, system fonts only)
+web/site.js            Mobile nav, copy buttons, code tabs, playground and docs filter
+```
+
+Docs pages are rendered on demand from the embedded Markdown; the dataset-driven
+counts on `/` are read from `AppState`. Legacy docs URLs (`/weapons`, `/spells`, …)
+308-redirect to `/docs/…`. The site makes no third-party requests; the only
+image is the embedded OpenAlbion logo (`web/logo.png`, also the favicon), and
+the rest of the artwork is inline SVG/CSS.
 
 ## Configuration (environment or `.env`)
 
@@ -130,7 +153,7 @@ category and subcategory (0 nulls).
 ## Tests
 
 ```bash
-cargo test    # 26 tests: unit + router-level integration
+cargo test    # unit + router-level integration tests
 cargo clippy  # warning-free
 ```
 
@@ -155,7 +178,7 @@ cd .. && cd public && DB_DATABASE=/tmp/openalbion-parity.sqlite \
 # 3. Rust app (the `WEAPONRY_KEY` there is for the *Laravel* side only; the
 #    Rust app is public and ignores the header):
 cd ../rust && DATA_DIR=./data \
-  RATE_LIMIT_PER_MINUTE=1000000 PORT=9911 cargo run
+  RATE_LIMIT_PER_MINUTE=1000000 PORT=9911 cargo run --bin openalbion-api
 
 # 4. Compare
 LARAVEL_DB=/tmp/openalbion-parity.sqlite bash scripts/parity_check.sh
@@ -167,9 +190,9 @@ credentials (the Rust app replaced that endpoint with an in-memory search, so
 responses only differ in result *ordering*). The `POST .../bug-report` 422
 validation bodies were also verified byte-for-byte against Laravel.
 
-The three web pages are compared by **status code only** — the Rust UI
-(home, terms, privacy) is an intentional redesign, so its markup and text no
-longer mirror the Laravel blade views.
+Web pages are compared by **status code only** — the Rust UI (home, docs,
+terms, privacy) is an intentional redesign, so its markup and text no longer
+mirror the Laravel blade views.
 
 The AOD price proxy compares response *shape* only (it proxies live market
 data that changes between requests; the upstream is also flaky under the 3s

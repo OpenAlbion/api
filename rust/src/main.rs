@@ -85,8 +85,8 @@ async fn main() -> std::io::Result<()> {
     let state = Arc::new(AppState::load(&data_dir, config)?);
 
     let app: Router = Router::new()
-        .nest("/api", openalbion_api::api::api_router(state))
-        .merge(web::web_router());
+        .nest("/api", openalbion_api::api::api_router(state.clone()))
+        .merge(web::web_router(state));
 
     // Trailing-slash tolerance (Laravel matches `/api/v1/weapons/` as well
     // as `/api/v1/weapons`). NormalizePathLayer must wrap the router before
