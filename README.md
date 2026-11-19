@@ -6,7 +6,7 @@ companion app.
 
 The project is now a **Rust API** (no database — the dataset is plain JSON) that runs as a
 native binary or on Cloudflare Workers. The original Laravel implementation that produced
-the dataset is kept for reference in [`Laravel (legacy)/`](<Laravel (legacy)/README.md>).
+the dataset is kept for reference in [`laravel/`](laravel/README.md).
 
 - Website / docs: <https://openalbion.com>
 - Live API: <https://openalbion.pyaesoneaungrgn.workers.dev>
@@ -22,8 +22,8 @@ rust/                    The API (Rust + axum), the dataset, and the data import
   web/                   Home / terms / privacy pages (embedded in the binary)
   worker/                Cloudflare Workers build (same router, compiled to wasm)
   scripts/               Data export + Laravel parity checker
-Laravel (legacy)/        The original Laravel app: DB migrations, models, console
-                         commands and the former API implementation
+laravel/                 The original Laravel app: DB migrations, models, console
+                         commands and the former API implementation (legacy)
 README.md                This file
 ```
 
@@ -116,11 +116,11 @@ changes are always reversible. Details, guarantees and limitations are documente
 
 ## Legacy Laravel application
 
-[`Laravel (legacy)/`](<Laravel (legacy)/README.md>) holds the original PHP/Laravel
+[`laravel/`](laravel/README.md) holds the original PHP/Laravel
 implementation: the Eloquent models and migrations that defined the dataset schema, the
 artisan commands that scraped the wiki, and the former API controllers. It is kept for
 historical reference and is no longer the deployed service — the Rust API replaces it.
-Its database (`Laravel (legacy)/database/database.sqlite`) is the snapshot the JSON
+Its database (`laravel/database/database.sqlite`) is the snapshot the JSON
 dataset was exported from.
 
 ## Credits

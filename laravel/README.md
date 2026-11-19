@@ -1,4 +1,4 @@
-# OpenAlbion — Laravel (legacy)
+# OpenAlbion — Laravel (legacy implementation)
 
 This is the **original Laravel implementation** of the OpenAlbion API and dataset
 pipeline. It is kept for reference only: the deployed service is now the Rust API in
@@ -25,7 +25,7 @@ Google sign-in, API-token management, the dashboard/profile pages and request lo
 Requires PHP 8.3+, Composer and Node.
 
 ```bash
-cd "Laravel (legacy)"
+cd laravel
 composer install
 cp .env.example .env
 php artisan key:generate
