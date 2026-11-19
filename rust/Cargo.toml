@@ -17,15 +17,6 @@ server = [
 ]
 # Cloudflare Workers (wasm32): see ./worker. Uses the Workers fetch API.
 worker = ["dep:worker"]
-# Wiki data refresh CLI (`openalbion-fetch`): headless-Chrome bootstrap,
-# HTML parsing and the file-backed data store. Never part of Workers builds.
-fetch = [
-    "server",
-    "dep:clap",
-    "dep:scraper",
-    "dep:chromiumoxide",
-    "dep:futures",
-]
 
 [dependencies]
 axum = { version = "0.8", default-features = false, features = ["json", "query", "matched-path", "original-uri"] }
@@ -42,20 +33,10 @@ tracing-subscriber = { version = "0.3", features = ["env-filter"], optional = tr
 
 worker = { version = "0.9", features = ["http", "axum"], optional = true }
 
-clap = { version = "4", features = ["derive", "env"], optional = true }
-scraper = { version = "0.21", optional = true }
-chromiumoxide = { version = "0.7", default-features = false, features = ["tokio-runtime"], optional = true }
-futures = { version = "0.3", optional = true }
-
 [[bin]]
 name = "openalbion-api"
 path = "src/main.rs"
 required-features = ["server"]
-
-[[bin]]
-name = "openalbion-fetch"
-path = "src/bin/openalbion-fetch.rs"
-required-features = ["fetch"]
 
 [profile.release]
 lto = true

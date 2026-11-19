@@ -61,6 +61,10 @@ consumable_craftings
 To update the dataset: refresh `database/database.sqlite` from the Laravel
 side, then re-run the export script and restart the app.
 
+The Albion Online Wiki's bot protection is respected: **no crawler or
+Cloudflare bypass ships with this project**. Dataset updates happen
+out-of-band (from a permitted source / manual export), not by scraping.
+
 ## Tests
 
 ```bash
@@ -108,75 +112,6 @@ longer mirror the Laravel blade views.
 The AOD price proxy compares response *shape* only (it proxies live market
 data that changes between requests; the upstream is also flaky under the 3s
 timeout, which either app can hit on a given run).
-
-## Refreshing the data (`openalbion-fetch`)
-
-The Laravel artisan fetch commands are ported to a second binary,
-`openalbion-fetch` (behind the `fetch` cargo feature; it is **not** part of
-the Worker build). It crawls `wiki.albiononline.com`, merges the rows into
-`data/*.json`, and never talks to a database.
-
-```bash
-cargo run --release --features fetch --bin openalbion-fetch -- --help
-```
-
-**Guarantees on every run**
-
-- the previous dataset is copied to `data/backups/<UTC timestamp>/` first;
-- rows are **merged**, never replaced — a row that no longer appears on the
-  wiki (or a page that fails to parse) is kept and reported as *missing*;
-- a table whose fetch produced **zero** rows is not written at all (a broken
-  parser can never shrink the dataset);
-- the run prints an `old / fetched / added / missing` table and writes
-  `report.json` next to the backup;
-- exit code `0` = clean, `2` = completed with warnings, `1` = fatal.
-
-**Cloudflare**: the wiki answers plain HTTP and headless Chrome with a
-"Just a moment…" challenge. Bootstrap the clearance once with a visible
-Chrome window, then crawl over HTTP:
-
-```bash
-# 1. one-time per cookie lifetime (opens Chrome; solve nothing — it is automatic)
-cargo run --release --features fetch --bin openalbion-fetch -- bootstrap
-
-# 2. sanity-check the transport (prints title/size, optional --dump-html)
-cargo run --release --features fetch --bin openalbion-fetch -- probe /wiki/Axe
-
-# 3. refresh (see the subcommand list for per-resource commands)
-cargo run --release --features fetch --bin openalbion-fetch -- --dry-run all   # inspect first
-cargo run --release --features fetch --bin openalbion-fetch -- all
-```
-
-If the cookie expires (HTTP 403 "Just a moment…"), re-run `bootstrap`, or
-pass `--auto-bootstrap`. `--transport browser` drives every page through
-Chrome instead of HTTP; `--transport fixture --dump-html <dir>` serves pages
-from saved HTML files (offline parser work).
-
-**Commands** (Laravel name → subcommand):
-
-| Laravel | `openalbion-fetch` |
-|---|---|
-| `get:weapon-category`, `get:armor-category`, `get:accessory-category`, `get:consumable-category` | `weapon-category`, `armor-category`, `accessory-category`, `consumable-category` (or `categories`) |
-| `get:weapon`, `get:armor`, `get:cape`, `get:bag`, `get:mount`, `get:food`, `get:potion` | `weapon`, `armor`, `cape`, `bag`, `mount`, `food`, `potion` |
-| `get:weapon-stat`, `get:armor-stat`, `get:accessory-stat`, `get:consumable-stat` | `weapon-stat`, `armor-stat`, `accessory-stat`, `consumable-stat` |
-| `get:weapon-spell`, `get:armor-spell`, `get:accessory-spell`, `get:mount-spell` | same names |
-| `get:consumable-crafting`, `get:consumable-info` | same names |
-| `update:*-identifier`, `update:item-power`, `update:mount-tier`, `update:cape-subcategory`, `update:bag-subcategory`, `sanitize:spell-description`, `update:spell-description` | `identifiers`, `item-power`, `mount-tier`, `cape-subcategory`, `bag-subcategory`, `sanitize-spell-description`, `update-spell-description` |
-
-Useful flags: `--dry-run` (fetch + report, no writes), `--limit N` (cap
-detail pages while testing selectors), `--dump-html DIR` (save fetched pages
-for selector debugging), `--concurrency`, `--delay-ms`, `--refresh-aod`
-(re-download the AOD item dump used for identifiers/crafting icons).
-
-**Selector fragility**: the parsers mirror the Laravel `DomCrawler` selector
-chains (including their fallback positions). When the wiki changes its DOM,
-the affected page is reported as `cannot parse <url>: …`, the old rows stay
-untouched, and `--dump-html` gives you the HTML to adjust the selector in
-`src/fetch/parse.rs`. `src/fetch/parse.rs` has unit tests per parser against
-inline fixtures.
-
-After refreshing, restart the native API (it loads the JSON at startup) or
-redeploy the Worker (the data is embedded in the wasm bundle).
 
 ## Docker
 

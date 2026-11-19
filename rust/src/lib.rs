@@ -3,8 +3,6 @@
 
 pub mod api;
 pub mod dto;
-#[cfg(feature = "fetch")]
-pub mod fetch;
 pub mod models;
 pub mod platform;
 pub mod render;

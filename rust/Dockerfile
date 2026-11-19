@@ -7,7 +7,7 @@ COPY src ./src
 COPY web ./web
 
 # Build with cached dependencies when available (none on a fresh build).
-RUN cargo build --release --bin openalbion-api
+RUN cargo build --release
 
 # --- run ------------------------------------------------------------------
 FROM debian:bookworm-slim
