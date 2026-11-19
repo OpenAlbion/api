@@ -5,3 +5,4 @@ cargo-home/
 # runtime artifacts
 data/bug-reports.jsonl
 .env
+.npm-cache/

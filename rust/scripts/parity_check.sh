@@ -244,35 +244,19 @@ else
 fi
 
 # ---------------------------------------------------------------------------
-# Web pages: compare visible text content (HTML structure intentionally
-# differs — blade vs plain HTML).
+# Web pages: the Rust UI is a deliberate redesign, so text/HTML no longer
+# mirrors the Laravel blade views. Only the status code is compared.
 # ---------------------------------------------------------------------------
-text_of() {
-    curl -s -m 8 "$1" | python3 -c '
-import html.parser, sys, re
-
-class Text(html.parser.HTMLParser):
-    def __init__(self):
-        super().__init__()
-        self.parts = []
-    def handle_data(self, data):
-        self.parts.append(data)
-
-p = Text()
-p.feed(sys.stdin.read())
-text = " ".join(p.parts)
-print(re.sub(r"\s+", " ", text).strip())
-'
-}
 for path in "/" "/terms-of-service" "/privacy-policy"; do
-    if [ "$(text_of "$LARAVEL$path")" = "$(text_of "$RUST$path")" ]; then
+    php_code="$(curl -s -o /dev/null -m 8 -w '%{http_code}' "$LARAVEL$path")"
+    rust_code="$(curl -s -o /dev/null -m 8 -w '%{http_code}' "$RUST$path")"
+    if [ "$php_code" = "$rust_code" ] && [ "$rust_code" = "200" ]; then
         PASS=$((PASS + 1))
-        printf 'OK    [text] %s\n' "$path"
+        printf 'OK    [%s] %s (status only — UI intentionally redesigned)\n' "$rust_code" "$path"
     else
         FAIL=$((FAIL + 1))
         FAILED_PATHS+=("web:$path")
-        printf 'DIFF  [text] %s\n' "$path"
-        diff <(text_of "$LARAVEL$path") <(text_of "$RUST$path") | head -10 | sed 's/^/      /'
+        printf 'DIFF  %s laravel=%s rust=%s\n' "$path" "$php_code" "$rust_code"
     fi
 done
 

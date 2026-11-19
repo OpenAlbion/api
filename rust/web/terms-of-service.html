@@ -9,6 +9,8 @@
     <meta name="description" content="OpenAlbion is a free and open-source platform providing Albion Online data and an API.">
     <meta name="keywords" content="OpenAlbion, Albion Online, data, API, open-source, developers">
     <meta name="author" content="Pyae Sone Aung">
+    <meta name="theme-color" content="#f8f9fb" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0a0c10" media="(prefers-color-scheme: dark)">
 
     <meta property="og:title" content="OpenAlbion">
     <meta property="og:description" content="OpenAlbion is a free and open-source platform providing Albion Online data and an API.">
@@ -18,43 +20,93 @@
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700,800&display=swap" rel="stylesheet" />
 
     <!-- Styles -->
+    <link rel="icon" href="/favicon.ico">
     <link rel="stylesheet" href="/app.css">
 </head>
+
 <body>
-    <div class="legal-page">
-        <div class="legal-sheet">
-            <h2>Terms of Service:</h2>
-            <p>By using OpenAlbion's services, you agree to the following terms and conditions:</p>
-            <ol>
-                <li>
-                  <strong>Usage:</strong> You are responsible for complying with all applicable laws and regulations while using OpenAlbion's services. Any activities conducted using the provided data and API are solely your responsibility.
-                </li>
-                <li>
-                  <strong>Data Accuracy:</strong> We strive to provide accurate data sourced from the Albion Online Wiki. However, we cannot guarantee its completeness or correctness. Any inaccuracies or errors in the database are our responsibility, not related to the Albion Online Wiki.
-                </li>
-                <li>
-                  <strong>API Usage:</strong> Our API offers free and unlimited access to Albion Online data. We may enforce reasonable rate limits or other restrictions to ensure fair usage and protect service stability.
-                </li>
-                <li>
-                  <strong>Self-Hosting:</strong> You have the option to self-host the OpenAlbion project by cloning the repository. You are responsible for setting it up and maintaining it on your own server.
-                </li>
-                <li>
-                  <strong>Disclaimer:</strong> OpenAlbion is provided "as is" without any warranties or guarantees. We do not assume any liability for damages, losses, or disruptions caused by the use of our services or reliance on the provided data.
-                </li>
-                <li>
-                  <strong>Changes:</strong> These terms may be updated without prior notice. It is your responsibility to review the most current version.
-                </li>
-            </ol>
-            <p>
-                By using OpenAlbion's services, you acknowledge and agree to these terms.
-            </p>
-            <p>
-                Please note that this simplified text may need further customization and should not be considered as legal advice. Consult with a legal professional to ensure compliance with applicable laws and regulations.
-            </p>
+
+    <header class="site-header">
+        <div class="container header-inner">
+            <a class="brand" href="/">
+                <img src="https://res.cloudinary.com/pyaesoneaung/image/upload/v1685124260/openalbion/favicon.png"
+                    alt="" class="brand-logo">
+                <span class="brand-name">OpenAlbion</span>
+            </a>
+
+            <nav class="site-nav">
+                <a href="https://openalbion.com" class="nav-link">Docs</a>
+                <a href="https://github.com/OpenAlbion/api" class="nav-link">GitHub</a>
+                <a href="/download" class="btn btn-sm btn-primary">Get the app</a>
+            </nav>
         </div>
-    </div>
+    </header>
+
+    <main class="legal-main">
+        <div class="container legal-container">
+            <a class="back-link" href="/">&larr; Back to home</a>
+
+            <article class="legal-sheet">
+                <h1>Terms of Service</h1>
+
+                <p>By using OpenAlbion's services, you agree to the following terms and conditions:</p>
+
+                <ol>
+                    <li>
+                        <strong>Usage:</strong> You are responsible for complying with all applicable laws and
+                        regulations while using OpenAlbion's services. Any activities conducted using the provided
+                        data and API are solely your responsibility.
+                    </li>
+                    <li>
+                        <strong>Data Accuracy:</strong> We strive to provide accurate data sourced from the Albion
+                        Online Wiki. However, we cannot guarantee its completeness or correctness. Any inaccuracies
+                        or errors in the database are our responsibility, not related to the Albion Online Wiki.
+                    </li>
+                    <li>
+                        <strong>API Usage:</strong> Our API offers free and unlimited access to Albion Online data.
+                        We may enforce reasonable rate limits or other restrictions to ensure fair usage and protect
+                        service stability.
+                    </li>
+                    <li>
+                        <strong>Self-Hosting:</strong> You have the option to self-host the OpenAlbion project by
+                        cloning the repository. You are responsible for setting it up and maintaining it on your own
+                        server.
+                    </li>
+                    <li>
+                        <strong>Disclaimer:</strong> OpenAlbion is provided "as is" without any warranties or
+                        guarantees. We do not assume any liability for damages, losses, or disruptions caused by the
+                        use of our services or reliance on the provided data.
+                    </li>
+                    <li>
+                        <strong>Changes:</strong> These terms may be updated without prior notice. It is your
+                        responsibility to review the most current version.
+                    </li>
+                </ol>
+
+                <p>By using OpenAlbion's services, you acknowledge and agree to these terms.</p>
+
+                <p>
+                    Please note that this simplified text may need further customization and should not be considered
+                    as legal advice. Consult with a legal professional to ensure compliance with applicable laws and
+                    regulations.
+                </p>
+            </article>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-bottom">
+            <span>&copy; OpenAlbion &mdash; MIT licensed</span>
+            <span>
+                <a href="/">Home</a> &middot;
+                <a href="/privacy-policy">Privacy Policy</a>
+            </span>
+        </div>
+    </footer>
+
 </body>
+
 </html>

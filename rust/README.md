@@ -101,6 +101,10 @@ credentials (the Rust app replaced that endpoint with an in-memory search, so
 responses only differ in result *ordering*). The `POST .../bug-report` 422
 validation bodies were also verified byte-for-byte against Laravel.
 
+The three web pages are compared by **status code only** — the Rust UI
+(home, terms, privacy) is an intentional redesign, so its markup and text no
+longer mirror the Laravel blade views.
+
 The AOD price proxy compares response *shape* only (it proxies live market
 data that changes between requests; the upstream is also flaky under the 3s
 timeout, which either app can hit on a given run).
