@@ -93,8 +93,21 @@ What happens on every run:
    dump lacks (kept), unmapped subcategories and skipped cosmetics.
 
 Preserved on overwrite: the row `id` of every matched item (so
-`*_stats` and item↔spell pivots stay attached), the wiki `path`, the
-consumable `info` text, and `categories.json` itself.
+`*_stats` and item↔spell pivots stay attached), the wiki `path`, and the
+consumable `info` text.
+
+Category tree: `categories.json` is curated by hand and never rewritten by the
+import, but it was extended for the families only the game data exposes —
+`Gathering Armor` (Garb / Cap / Workboots), `Avalonian Capes`,
+`Smuggler Capes`, `Backpacks`, the newer potion types (Acid, Berserk,
+Cleansing, Gathering, Hellfire, Lifeward, Calming, Tornado) and `Fish`. The
+importer maps every item onto that tree, so no item is left without a
+category; unknown families are reported instead of being invented.
+
+Cosmetics: promotional/vanity content (founder, starter-pack, recruiter,
+event, firework, decorative, Game-Master and test entries) is **excluded** —
+and removed from the dataset if an earlier import added it (the backup keeps
+it). `--include-cosmetics` opts back in.
 
 **Not provided by the dump** (documented limitation, reported per run):
 per-quality stats, spells/slot links, and wiki paths for new items. New items
@@ -108,9 +121,11 @@ founder/vanity/starter-pack items, skipped by default), `--only items|crafting`,
 `status` (compare the dataset with the dump without writing).
 Downloads are cached in `data/.cache/ao-bin-dumps/` (both gitignored).
 
-Latest import (dump of 2026-11-19): weapons 694 → **802**, armors 426 → **548**,
-accessories 174 → **220**, consumables 72 → **104**, crafting rows 238 → **392**;
-7 accessories + 1 consumable are wiki-only entries the dump lacks and were kept.
+Latest import (dump of 2026-11-19): weapons 694 → **802**, armors 426 → **534**,
+accessories 174 → **219**, consumables 72 → **100**, crafting rows 238 → **390**;
+7 accessories + 1 consumable are wiki-only entries the dump lacks and were kept,
+and 45 cosmetics from the earlier import were pruned. Every item now has a
+category and subcategory (0 nulls).
 
 ## Tests
 

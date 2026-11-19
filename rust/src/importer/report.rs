@@ -78,8 +78,8 @@ impl ImportReport {
             let (old, new) = self.counts[*key];
             let stats = self.stats.get(*key).cloned().unwrap_or_default();
             println!(
-                "{:<14} {:>6} {:>6} {:>6} {:>8} {:>8}",
-                key, old, new, stats.inserted, stats.updated, stats.unchanged
+                "{:<14} {:>6} {:>6} {:>6} {:>8} {:>8} {:>7}",
+                key, old, new, stats.inserted, stats.updated, stats.unchanged, stats.removed
             );
         }
 
@@ -107,6 +107,9 @@ impl ImportReport {
                     key,
                     stats.item_power_changed.len()
                 );
+            }
+            if stats.removed > 0 {
+                println!("{}: {} cosmetic/test row(s) removed", key, stats.removed);
             }
             if stats.carry_over_without_match > 0 {
                 println!(
@@ -192,6 +195,7 @@ impl ImportReport {
                         "item_power_changed": stats.item_power_changed,
                         "tier_changed": stats.tier_changed,
                         "kept_not_in_dump": stats.carry_over_without_match,
+                        "removed_cosmetic": stats.removed,
                     })
                 })
                 .collect()

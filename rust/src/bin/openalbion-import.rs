@@ -175,6 +175,13 @@ async fn run(cli: Cli) -> Result<ExitCode, String> {
                     table.label()
                 ));
             }
+            if table_stats.removed > 0 {
+                println!(
+                    "{}: removed {} cosmetic/test row(s) (still in the backup)",
+                    table.label(),
+                    table_stats.removed
+                );
+            }
             report.record_table(
                 table,
                 old_counts.get(table.label()).copied().unwrap_or(0),
@@ -207,6 +214,18 @@ async fn run(cli: Cli) -> Result<ExitCode, String> {
                 )
             })
             .collect();
+        // Crafting rows of consumables that no longer exist would be orphans.
+        let live_ids: std::collections::HashSet<i64> =
+            dataset.consumables.iter().map(|row| row.id).collect();
+        let before_crafting = dataset.consumable_craftings.len();
+        dataset
+            .consumable_craftings
+            .retain(|row| live_ids.contains(&row.consumable_id));
+        let pruned_crafting = before_crafting - dataset.consumable_craftings.len();
+        if pruned_crafting > 0 {
+            changed_files.push(TableFile::ConsumableCraftings);
+            println!("crafting: removed {pruned_crafting} orphaned row(s)");
+        }
         let next_id = crafting::next_crafting_id(&dataset.consumable_craftings);
         let (rows, stats) =
             crafting::regenerate(&dump, &dataset.consumable_craftings, &consumables, next_id);

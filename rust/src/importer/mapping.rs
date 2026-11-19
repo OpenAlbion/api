@@ -69,7 +69,9 @@ pub fn table_of(item: &AodItem) -> Option<Table> {
         // Gathering gear and cosmetics live under an "other" shop category
         // but are still real armor pieces.
         (Some("armor" | "head" | "shoes"), Some("gathering" | "other")) => Some(Table::Armors),
-        (Some("cape" | "bag"), Some("other" | "vanity")) => Some(Table::Accessories),
+        (Some("cape" | "bag"), Some("gathering" | "other" | "vanity")) => {
+            Some(Table::Accessories)
+        }
         _ => {
             // Fall back on the weapon section markers: AOD marks off-hands and
             // shapeshifter staves with varying shop categories.
@@ -137,6 +139,17 @@ fn weapon_path(item: &AodItem) -> CategoryPath {
 
 fn armor_path(item: &AodItem) -> CategoryPath {
     let sub1 = item.shop_subcategory1.as_deref().unwrap_or("");
+    // Gathering gear (harvester/miner/skinner/fisherman/quarrier/lumberjack)
+    // has its own family, split by slot.
+    if item.shop_category.as_deref() == Some("gathering") {
+        let subcategory = match item.slot_type.as_deref() {
+            Some("armor") => "Garb",
+            Some("head") => "Cap",
+            Some("shoes") => "Workboots",
+            _ => return CategoryPath::new("Gathering Armor", None),
+        };
+        return CategoryPath::new("Gathering Armor", Some(subcategory));
+    }
     let (category, subcategory) = match sub1 {
         "cloth_armor" => ("Cloth Armor", "Robes"),
         "cloth_helmet" => ("Cloth Armor", "Cowl"),
@@ -161,11 +174,25 @@ fn armor_path(item: &AodItem) -> CategoryPath {
 fn accessory_path(item: &AodItem) -> CategoryPath {
     match item.slot_type.as_deref() {
         Some("cape") => {
-            // Faction capes carry the `_FW_` marker (Bridgewatch, Caerleon, …);
-            // other capes keep whatever the dataset already maps them to.
-            if item.unique_name.contains("_FW_") {
+            // Gathering backpacks are stored as capes in the game data.
+            if item.shop_category.as_deref() == Some("gathering") {
+                return CategoryPath::new("Bag", Some("Backpacks"));
+            }
+            let sub1 = item.shop_subcategory1.as_deref().unwrap_or("");
+            if sub1.contains("avalon") || item.unique_name.contains("_AVALON") {
+                CategoryPath::new("Cape", Some("Avalonian Capes"))
+            } else if sub1.contains("smuggler") {
+                CategoryPath::new("Cape", Some("Smuggler Capes"))
+            } else if sub1.contains("brecilien") {
+                CategoryPath::new("Cape", Some("Faction Capes"))
+            } else if sub1.ends_with("capes_capes") {
+                CategoryPath::new("Cape", Some("Normal Capes"))
+            } else if item.unique_name.contains("_FW_") || item.unique_name.contains("CAPEITEM_") {
+                // Faction capes: the `_FW_` marker (Bridgewatch, Caerleon, …) plus
+                // the older faction items (Demon, Heretic, Keeper, Morgana, Undead).
                 CategoryPath::new("Cape", Some("Faction Capes"))
             } else {
+                // Normal capes keep whatever the dataset already maps them to.
                 CategoryPath::new("Cape", None)
             }
         }
@@ -206,7 +233,8 @@ fn consumable_path(item: &AodItem) -> CategoryPath {
             "soup" | "soups" => Some("Soup"),
             "stew" | "stews" => Some("Stew"),
             "roast" | "roasts" => Some("Roast"),
-            _ => None, // grilled fish, event meals, …
+            "grilledfish" => Some("Fish"),
+            _ => None, // event meals, …
         };
         return CategoryPath::new("Foods", subcategory);
     }
@@ -215,11 +243,19 @@ fn consumable_path(item: &AodItem) -> CategoryPath {
         "heal" => Some("Healing"),
         "gigantify" => Some("Gigantify"),
         "resistance" => Some("Resistance"),
-        "sticky" => Some("Sticky"),
+        "sticky" | "slowfield" => Some("Sticky"),
         "poison" | "poision" => Some("Poision"),
         "invisible" | "invisibility" => Some("Invisible"),
         "focus" => Some("Focus"),
-        _ => None, // cleansing/acid/berserk/… potions
+        "acid" => Some("Acid"),
+        "berserk" => Some("Berserk"),
+        "cleanse" | "cleansing" => Some("Cleansing"),
+        "gather" | "gathering" => Some("Gathering"),
+        "lava" | "hellfire" => Some("Hellfire"),
+        "lifeward" => Some("Lifeward"),
+        "calming" | "mob_reset" => Some("Calming"),
+        "tornado" => Some("Tornado"),
+        _ => None, // event items
     };
     CategoryPath::new("Potions", subcategory)
 }
@@ -321,11 +357,16 @@ mod tests {
             "",
         ))
         .unwrap();
-        assert_eq!(
-            gather.subcategory, None,
-            "gathering sets have no wiki subcategory"
-        );
-        assert!(gather.category.is_empty(), "no category is invented either");
+        // Gathering gear has its own family with a slot subcategory.
+        assert_eq!(gather.category, "Gathering Armor");
+        assert_eq!(gather.subcategory.as_deref(), Some("Garb"));
+        let head = category_path(&item("T4_HEAD_GATHERER_ORE", "head", "gathering", "ore", "")).unwrap();
+        assert_eq!(head.subcategory.as_deref(), Some("Cap"));
+        let shoes = category_path(&item("T4_SHOES_GATHERER_HIDE", "shoes", "gathering", "hide", "")).unwrap();
+        assert_eq!(shoes.subcategory.as_deref(), Some("Workboots"));
+        // Unknown non-gathering families are still reported, not invented.
+        let unknown = category_path(&item("T4_X", "armor", "armors", "mystery", "")).unwrap();
+        assert!(unknown.category.is_empty());
 
         let dragon = category_path(&item(
             "T4_HEAD_LEATHER_DRAGON",
@@ -352,6 +393,20 @@ mod tests {
 
         let bag = category_path(&item("T4_BAG", "bag", "bags", "", "")).unwrap();
         assert_eq!(bag.subcategory.as_deref(), Some("Normal Bags"));
+
+        // Gathering backpacks are stored as capes in the game data.
+        let backpack = category_path(&item("T4_BACKPACK_GATHERER_FIBER", "cape", "gathering", "fiber", "")).unwrap();
+        assert_eq!((backpack.category.as_str(), backpack.subcategory.as_deref()), ("Bag", Some("Backpacks")));
+
+        let avalon = category_path(&item(
+            "T4_CAPEITEM_AVALON",
+            "cape",
+            "capes",
+            "accessoires_capes_avalon",
+            "",
+        ))
+        .unwrap();
+        assert_eq!(avalon.subcategory.as_deref(), Some("Avalonian Capes"));
 
         let mut horse = item(
             "T5_MOUNT_ARMORED_HORSE",
@@ -391,7 +446,11 @@ mod tests {
             "grilledfish",
         ))
         .unwrap();
-        assert_eq!(fish.subcategory, None);
+        assert_eq!(fish.subcategory.as_deref(), Some("Fish"));
+        // Event meals stay unmapped (and are filtered upstream).
+        let event = category_path(&item("T4_MEAL_EVENT", "food", "consumables", "food", "event"))
+            .unwrap();
+        assert_eq!(event.subcategory, None);
 
         let heal = category_path(&item(
             "T4_POTION_HEAL",
@@ -411,6 +470,19 @@ mod tests {
             "acid",
         ))
         .unwrap();
-        assert_eq!(acid.subcategory, None);
+        assert_eq!(acid.subcategory.as_deref(), Some("Acid"));
+        let calming =
+            category_path(&item("T3_POTION_MOB_RESET", "potion", "consumables", "potions", "calming"))
+                .unwrap();
+        assert_eq!(calming.subcategory.as_deref(), Some("Calming"));
+        let lava = category_path(&item(
+            "T4_POTION_LAVA",
+            "potion",
+            "consumables",
+            "potions",
+            "lava",
+        ))
+        .unwrap();
+        assert_eq!(lava.subcategory.as_deref(), Some("Hellfire"));
     }
 }

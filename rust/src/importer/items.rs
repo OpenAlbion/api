@@ -48,6 +48,9 @@ pub struct SkippedItem {
 pub struct Plan {
     pub items: Vec<PlannedItem>,
     pub skipped: Vec<SkippedItem>,
+    /// Identifiers the dump marks as cosmetic/test — these are also removed
+    /// from the dataset if a previous import added them.
+    pub excluded_ids: Vec<String>,
     /// Items with no item power anywhere in the dump (new rows only).
     pub missing_item_power: usize,
 }
@@ -102,6 +105,7 @@ pub fn plan(dump: &AodDump, dataset: &Dataset, include_cosmetics: bool) -> Plan 
             continue;
         };
         if !include_cosmetics && item.is_cosmetic_or_test() {
+            plan.excluded_ids.push(item.unique_name.clone());
             plan.skipped.push(SkippedItem {
                 unique_name: item.unique_name.clone(),
                 name: item.name.clone(),
@@ -237,12 +241,22 @@ pub fn consumable_rows_for(
 pub fn apply(plan: &Plan, dataset: &mut Dataset) -> HashMap<Table, OverwriteStats> {
     let index = dataset.identity_index();
     let mut stats: HashMap<Table, OverwriteStats> = HashMap::new();
+    let excluded: std::collections::HashSet<&str> =
+        plan.excluded_ids.iter().map(String::as_str).collect();
 
     for table in [Table::Weapons, Table::Armors, Table::Accessories] {
         let existing = dataset.items(table).to_vec();
         let incoming = rows_for(plan, table, dataset, &index);
-        let (rows, item_stats) =
+        let (mut rows, mut item_stats) =
             crate::importer::store::merge_item_rows(&existing, incoming, &index);
+        // Cosmetics the dump rejects must not linger from an earlier import.
+        let before = rows.len();
+        rows.retain(|row| !row.identifier.as_deref().is_some_and(|id| excluded.contains(id)));
+        item_stats.removed += before - rows.len();
+        // Pruned rows are not "kept because the dump lacks them".
+        item_stats.carry_over_without_match = item_stats
+            .carry_over_without_match
+            .saturating_sub(item_stats.removed);
         if let Some(slot) = dataset.items_mut(table) {
             *slot = rows;
         }
@@ -251,8 +265,14 @@ pub fn apply(plan: &Plan, dataset: &mut Dataset) -> HashMap<Table, OverwriteStat
 
     let existing = dataset.consumables.clone();
     let incoming = consumable_rows_for(plan, dataset, &index);
-    let (rows, cons_stats) =
+    let (mut rows, mut cons_stats) =
         crate::importer::store::merge_consumable_rows(&existing, incoming, &index);
+    let before = rows.len();
+    rows.retain(|row| !row.identifier.as_deref().is_some_and(|id| excluded.contains(id)));
+    cons_stats.removed += before - rows.len();
+    cons_stats.carry_over_without_match = cons_stats
+        .carry_over_without_match
+        .saturating_sub(cons_stats.removed);
     dataset.consumables = rows;
     stats.insert(Table::Consumables, cons_stats);
 

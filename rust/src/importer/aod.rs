@@ -79,8 +79,16 @@ impl AodItem {
             "RUBBERBAND",
             "NONTRADABLE",
             "EVENTITEM",
+            // cosmetics and promotional sets
+            "_FOUNDER_",
+            "STARTERPACK",
+            "TELLAFRIEND",
+            "_XMAS",
+            "EVENT_",
+            "ARENA_BANNER",
+            "DRAKE_EGG",
         ];
-        const NAME_MARKERS: &[&str] = &["game master", "vanity", "test "];
+        const NAME_MARKERS: &[&str] = &["game master", "vanity", "test ", "decorative "];
         let upper = self.unique_name.to_uppercase();
         if ID_MARKERS.iter().any(|marker| upper.contains(marker)) {
             return true;

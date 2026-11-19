@@ -376,11 +376,13 @@ pub struct OverwriteStats {
     pub item_power_changed: Vec<(String, Option<i64>, Option<i64>)>,
     pub tier_changed: Vec<(String, Option<f64>, Option<f64>)>,
     pub carry_over_without_match: usize,
+    /// Rows removed because the dump marks them as cosmetic/test.
+    pub removed: usize,
 }
 
 impl OverwriteStats {
     pub fn changed(&self) -> bool {
-        self.updated > 0 || self.inserted > 0
+        self.updated > 0 || self.inserted > 0 || self.removed > 0
     }
 }
 
