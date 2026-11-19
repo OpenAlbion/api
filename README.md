@@ -123,8 +123,7 @@ historical reference and is no longer the deployed service — the Rust API repl
 Its database (`laravel/database/database.sqlite`) is the snapshot the JSON
 dataset was exported from.
 
-## Credits
+## Data & attribution
 
-Built by [Pyae Sone Aung](https://github.com/pyaesoneaung) and contributors.
-Data collected from the Albion Online Wiki and the game's own data dumps.
-Not affiliated with Sandbox Interactive.
+Data is collected from the Albion Online Wiki and the game's own data dumps.
+OpenAlbion is not affiliated with Sandbox Interactive.
