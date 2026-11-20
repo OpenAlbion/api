@@ -1,8 +1,9 @@
 # OpenAlbion
 
 OpenAlbion is a free and open-source platform providing **Albion Online data and an
-API**, plus the [Weaponry](https://play.google.com/store/apps/details?id=com.openalbion.weaponry)
-companion app.
+API**, plus two demo clients built on it: the [Armory](https://armory.openalbion.com) web app
+and the [Weaponry](https://play.google.com/store/apps/details?id=com.openalbion.weaponry)
+Android app.
 
 The project is now a **Rust API** (no database — the dataset is plain JSON) that runs as a
 native binary or on Cloudflare Workers. The original Laravel implementation that produced
@@ -10,7 +11,24 @@ the dataset is kept for reference in [`laravel/`](laravel/README.md).
 
 - Website / docs: <https://api.openalbion.com> (docs at <https://api.openalbion.com/docs>)
 - Live API: <https://api.openalbion.com>
+- Web demo: <https://armory.openalbion.com>
+- Android demo: <https://play.google.com/store/apps/details?id=com.openalbion.weaponry>
 - License: MIT
+
+## Demos
+
+Two clients ship with the project. Both are built only on the public API — no key, no private
+routes — so they double as reference implementations:
+
+- **Armory, web demo** — <https://armory.openalbion.com>. A kawaii-retro item browser for
+  every weapon, armor, accessory and consumable, with stat sheets, spells, crafting recipes
+  and live market prices.
+- **Weaponry, Android demo** —
+  <https://play.google.com/store/apps/details?id=com.openalbion.weaponry>. The Android
+  companion app: weapons, mounts, armors, bags and accessories with their stats and
+  abilities, plus live market prices.
+
+Both are featured side by side on the [home page](https://api.openalbion.com/#demos).
 
 ## Repository layout
 

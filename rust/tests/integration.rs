@@ -593,6 +593,19 @@ async fn web_pages_serve() {
         assert!(html.contains(title), "{path} should contain {title}");
         assert!(!html.contains("<img src=\"http"), "{path} should not hotlink images");
         assert!(html.contains("src=\"/logo.png\""), "{path} should use the local logo");
+        assert!(
+            html.contains("href=\"https://armory.openalbion.com\""),
+            "{path} should link the Armory item browser from the footer"
+        );
+        for demo in [
+            "class=\"nav-demo nav-demo-web\" href=\"https://armory.openalbion.com\"",
+            "class=\"nav-demo nav-demo-android\" href=\"/download\"",
+        ] {
+            assert!(
+                html.contains(demo),
+                "{path} should offer {demo} in the main nav"
+            );
+        }
         assert!(!html.contains("weaponryV2"), "{path} must not advertise the app-only V2 endpoint");
         for forbidden in [
             "fonts.bunny",
@@ -615,6 +628,15 @@ async fn web_pages_serve() {
     assert!(!home.contains("{{"), "no template tokens should remain");
     assert!(home.contains("/docs/weapons"));
     assert!(home.contains("data-playground"));
+
+    // Both demo clients are presented side by side.
+    assert!(
+        home.contains("id=\"demos\""),
+        "home page should feature the demos section"
+    );
+    for demo in ["<h3>OpenAlbion Armory</h3>", "<h3>OpenAlbion Weaponry</h3>"] {
+        assert!(home.contains(demo), "home page should name {demo}");
+    }
 
     // /download redirects to the Play Store with 302
     let response = get_raw(&mut app, "/download").await;
@@ -680,6 +702,19 @@ async fn docs_pages_serve() {
         );
         assert!(!html.contains("<img src=\"http"), "{path} should not hotlink images");
         assert!(html.contains("src=\"/logo.png\""), "{path} should use the local logo");
+        assert!(
+            html.contains("href=\"https://armory.openalbion.com\""),
+            "{path} should link the Armory item browser from the footer"
+        );
+        for demo in [
+            "class=\"nav-demo nav-demo-web\" href=\"https://armory.openalbion.com\"",
+            "class=\"nav-demo nav-demo-android\" href=\"/download\"",
+        ] {
+            assert!(
+                html.contains(demo),
+                "{path} should offer {demo} in the main nav"
+            );
+        }
         assert!(!html.contains("weaponryV2"), "{path} must not advertise the app-only V2 endpoint");
     }
 }

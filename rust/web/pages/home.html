@@ -20,7 +20,7 @@
                     <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-play"></use></svg>
                     Try it live
                 </a>
-                <a class="btn btn-ghost" href="/download">Get Weaponry</a>
+                <a class="btn btn-ghost" href="#demos">See the demos</a>
             </div>
 
             <ul class="badge-row" aria-label="API highlights">
@@ -307,13 +307,78 @@ print(len(res.json()["data"]))</code></pre>
     </div>
 </section>
 
+<section class="section band band-sky" id="demos" aria-labelledby="demos-title">
+    <div class="container">
+        <div class="section-head">
+            <p class="kicker">Part of the project</p>
+            <h2 id="demos-title">Two demos, one API.</h2>
+            <p>
+                Both clients ship with OpenAlbion to show what these public endpoints can do &mdash;
+                one in the browser, one in your pocket. Neither gets a private route.
+            </p>
+        </div>
+
+        <div class="demo-grid">
+            <article class="demo-card sticker-card sticker-cream">
+                <p class="demo-platform"><span class="sticker sticker-sky">Web demo</span></p>
+                <h3>OpenAlbion Armory</h3>
+                <p>
+                    A kawaii-retro item browser for every weapon, armor, accessory and consumable in
+                    Albion Online &mdash; stat sheets, spells, crafting recipes and live market prices,
+                    all read from <code>/api/v3</code> in the browser.
+                </p>
+
+                <ul class="badge-row" aria-label="What the Armory covers">
+                    <li class="badge">Every item</li>
+                    <li class="badge">Spells &amp; stats</li>
+                    <li class="badge">Live prices</li>
+                </ul>
+
+                <a class="btn btn-primary demo-cta" href="https://armory.openalbion.com" rel="noopener">
+                    Open the Armory
+                    <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"></use></svg>
+                </a>
+            </article>
+
+            <article class="demo-card sticker-card sticker-cream">
+                <p class="demo-platform"><span class="sticker sticker-mint">Android demo</span></p>
+                <h3>OpenAlbion Weaponry</h3>
+                <p>
+                    The Android companion app: weapons, mounts, armors, bags and accessories with
+                    their stats and abilities, plus live market prices when you are buying, selling
+                    or trading.
+                </p>
+
+                <ul class="badge-row" aria-label="What Weaponry covers">
+                    <li class="badge">Stats &amp; abilities</li>
+                    <li class="badge">Market prices</li>
+                    <li class="badge">Open source</li>
+                </ul>
+
+                <a class="btn btn-primary demo-cta" href="/download">
+                    Get it on Play Store
+                    <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"></use></svg>
+                </a>
+            </article>
+        </div>
+
+        <p class="demos-note">
+            Both read the same endpoints &mdash; nothing private, nothing hidden.
+            <a class="text-link" href="/docs/weapons">
+                Browse the item endpoints
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"></use></svg>
+            </a>
+        </p>
+    </div>
+</section>
+
 <section class="section section-cta">
     <div class="container">
         <div class="cta-card sticker-card sticker-red">
             <div>
                 <p class="kicker">Ship it</p>
                 <h2>Build something with it.</h2>
-                <p>Free forever, MIT licensed, and yours to self-host. If you build something neat, we would love to see it.</p>
+                <p>Free forever, MIT licensed, and yours to self-host. Both demos started with one fetch call &mdash; yours can too.</p>
             </div>
             <div class="cta-actions">
                 <a class="btn btn-primary" href="/docs">Browse the docs</a>

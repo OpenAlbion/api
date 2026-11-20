@@ -461,6 +461,29 @@ pre {
     transform: scaleX(1);
 }
 
+/* The two demo clients get equal, highlighted slots in the header. */
+.nav-demo {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 13px;
+    border: 2px solid var(--ink);
+    border-radius: 999px;
+    box-shadow: 2px 2px 0 var(--ink);
+    font-size: 0.8rem;
+    font-weight: 800;
+    letter-spacing: 0.01em;
+    text-decoration: none;
+    transition: transform 120ms ease, box-shadow 120ms ease;
+}
+
+.nav-demo:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 3px 3px 0 var(--ink);
+}
+
+.nav-demo-web { background: var(--sky); }
+.nav-demo-android { background: var(--mint); }
+
 .nav-toggle {
     display: none;
     padding: 8px 14px;
@@ -759,6 +782,7 @@ pre {
 .band-mint { --band: var(--mint); }
 .band-lilac { --band: var(--lilac); }
 .band-butter { --band: var(--butter); }
+.band-sky { --band: var(--sky); }
 
 /* Sections -------------------------------------------------------------- */
 
@@ -1325,6 +1349,60 @@ pre {
     flex-wrap: wrap;
     gap: 10px;
     flex: none;
+}
+
+/* Demos ----------------------------------------------------------------- */
+
+.demo-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px;
+}
+
+.demo-card {
+    display: flex;
+    flex-direction: column;
+    padding: 30px;
+}
+
+.demo-platform {
+    margin: 0 0 16px;
+}
+
+.demo-card h3 {
+    margin: 0;
+    font-size: clamp(1.4rem, 2.6vw, 1.9rem);
+    font-weight: 900;
+}
+
+.demo-card > p:not(.demo-platform) {
+    max-width: 48ch;
+    margin: 12px 0 0;
+    color: var(--ink-soft);
+}
+
+.demo-card code {
+    padding: 1px 6px;
+    border: 2px solid var(--ink);
+    border-radius: 7px;
+    background: var(--paper-soft);
+    font-size: 0.85em;
+}
+
+.demo-card .badge-row {
+    margin-top: 20px;
+    margin-bottom: 26px;
+}
+
+.demo-cta {
+    margin-top: auto;
+    align-self: flex-start;
+}
+
+.demos-note {
+    margin: 26px 0 0;
+    font-size: 0.92rem;
+    color: var(--ink-soft);
 }
 
 /* Docs layout ----------------------------------------------------------- */
@@ -2003,6 +2081,15 @@ pre {
         align-items: flex-start;
     }
 
+    .demo-grid {
+        grid-template-columns: 1fr;
+        gap: 18px;
+    }
+
+    .demo-card {
+        padding: 26px;
+    }
+
     .docs-shell {
         grid-template-columns: 1fr;
         padding-top: 28px;
@@ -2082,6 +2169,11 @@ pre {
 
     .site-nav .nav-link {
         padding: 10px 4px;
+    }
+
+    .site-nav .nav-demo {
+        align-self: flex-start;
+        margin-top: 4px;
     }
 
     .site-nav .btn {

@@ -11,6 +11,8 @@ pub const SITE_NAME: &str = "OpenAlbion";
 pub const PLAY_STORE_URL: &str =
     "https://play.google.com/store/apps/details?id=com.openalbion.weaponry";
 pub const GITHUB_URL: &str = "https://github.com/OpenAlbion/api";
+/// Community project built on the API; linked from the footer and the home page.
+pub const ARMORY_URL: &str = "https://armory.openalbion.com";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Active {
@@ -114,12 +116,14 @@ fn header(active: Active) -> String {
                 <a class="nav-link" href="/docs"{docs_current}>Docs</a>
                 <a class="nav-link" href="/#playground">Playground</a>
                 <a class="nav-link" href="{github}" rel="noopener">GitHub</a>
-                <a class="btn btn-sm btn-primary" href="/download">Get the app</a>
+                <a class="nav-demo nav-demo-web" href="{armory}" rel="noopener">Web demo</a>
+                <a class="nav-demo nav-demo-android" href="/download">Android demo</a>
             </nav>
         </div>
     </header>"##,
         docs_current = docs_current,
         github = GITHUB_URL,
+        armory = ARMORY_URL,
     )
 }
 
@@ -146,7 +150,8 @@ fn footer() -> String {
 
             <nav class="footer-col" aria-label="Project">
                 <h2>Project</h2>
-                <a href="{play_store}" rel="noopener">Weaponry app</a>
+                <a href="{armory}" rel="noopener">Armory &mdash; web demo</a>
+                <a href="/download">Weaponry &mdash; Android demo</a>
                 <a href="{github}/issues" rel="noopener">Report an issue</a>
                 <a href="/terms-of-service">Terms of Service</a>
                 <a href="/privacy-policy">Privacy Policy</a>
@@ -165,7 +170,7 @@ fn footer() -> String {
         </div>
     </footer>"##,
         github = GITHUB_URL,
-        play_store = PLAY_STORE_URL,
+        armory = ARMORY_URL,
     )
 }
 
